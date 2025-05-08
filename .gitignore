@@ -1,0 +1,21 @@
+# Ignorar dependencias y archivos temporales
+/vendor/
+/core/
+/web/sites/*/files/
+/web/sites/*/private/
+/web/sites/simpletest/
+/node_modules/
+*.log
+
+# Archivos del entorno
+/.idea/
+/.vscode/
+/.env
+
+# Archivos de Composer innecesarios en producción
+/composer.lock
+
+# Ignorar backups o datos temporales
+*.sql
+*.tar.gz
+*.zip
