@@ -1,0 +1,6 @@
+services:
+  friasya.node_insert_subscriber:
+    class: Drupal\friasya\EventSubscriber\NodeInsertSubscriber
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: event_subscriber }
