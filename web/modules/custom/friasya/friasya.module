@@ -1,2 +1,25 @@
 <?php
-// Módulo Friasya personalizado para gestión de stock.
+
+use Drupal\node\Entity\Node;
+
+/**
+ * Implementa hook_entity_insert().
+ */
+function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'venta') {
+    if ($entity->hasField('field_producto') && !$entity->get('field_producto')->isEmpty()) {
+      $producto_nid = $entity->get('field_producto')->target_id;
+      $cantidad = $entity->hasField('field_cantidad') ? (int) $entity->get('field_cantidad')->value : 1;
+
+      /** @var \Drupal\node\Entity\Node $producto */
+      $producto = Node::load($producto_nid);
+      if ($producto && $producto->bundle() === 'producto') {
+        if ($producto->hasField('field_stock')) {
+          $stock_actual = (int) $producto->get('field_stock')->value;
+          $producto->set('field_stock', max(0, $stock_actual - $cantidad));
+          $producto->save();
+        }
+      }
+    }
+  }
+}
