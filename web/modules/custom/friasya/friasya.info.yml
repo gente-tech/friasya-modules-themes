@@ -1,0 +1,7 @@
+name: Friasya
+type: module
+description: 'Actualiza el stock de productos al crear ventas.'
+core_version_requirement: ^10
+package: Custom
+dependencies:
+  - node
