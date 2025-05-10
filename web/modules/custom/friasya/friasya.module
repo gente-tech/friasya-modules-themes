@@ -6,7 +6,7 @@ use Drupal\node\Entity\Node;
  * Implementa hook_entity_insert().
  */
 function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
-  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'transaccion') {
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'transacion') {
     \Drupal::logger('friasya')->notice('hook_entity_insert ejecutado para transacción.');
 
     // Validar campo field_productos (referencia al producto).
