@@ -15,9 +15,10 @@ class VentaController extends ControllerBase {
       '#form' => \Drupal::formBuilder()->getForm(VentaForm::class),
       '#attached' => [
         'library' => [
-          // Puedes definir una librería si luego necesitas CSS separado.
+          'friasya/form_venta',
         ],
       ],
     ];
+
   }
 }
