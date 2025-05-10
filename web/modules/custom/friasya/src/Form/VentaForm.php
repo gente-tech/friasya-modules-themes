@@ -78,7 +78,7 @@ class VentaForm extends FormBase {
       'field_cantidad' => $cantidad,
       'field_valor' => $valor_total,
       'field_metodo_de_pago' => [['target_id' => $metodo_tid]],
-      'field_tipo' => [['target_id' => $this->getTermIdByName('Ingreso', 'tipos_de_transacciones')]],
+      'field_tipo' => [['target_id' => $this->getTermIdByName('Ingreso', 't')]], // ← Aquí se corrigió
       'body' => [
         'value' => $direccion,
         'format' => 'basic_html',
@@ -108,4 +108,5 @@ class VentaForm extends FormBase {
     return $term ? $term->id() : NULL;
   }
 }
+
 
