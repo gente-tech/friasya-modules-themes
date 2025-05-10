@@ -12,13 +12,11 @@ class VentaController extends ControllerBase {
   public function build() {
     return [
       '#theme' => 'friasya_form_venta',
-      '#form' => \Drupal::formBuilder()->getForm(VentaForm::class),
+      '#form' => \Drupal::formBuilder()->getForm('Drupal\friasya\Form\VentaForm'),
       '#attached' => [
-        'library' => [
-          'friasya/form_venta',
-        ],
+        'library' => ['friasya/form_venta'],
       ],
     ];
-
   }
+
 }
