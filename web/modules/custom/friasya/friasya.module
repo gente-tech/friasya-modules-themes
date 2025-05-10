@@ -6,7 +6,7 @@ use Drupal\node\Entity\Node;
  * Implementa hook_entity_insert().
  */
 function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
-  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'venta') {
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'transacion') {
     if ($entity->hasField('field_producto') && !$entity->get('field_producto')->isEmpty()) {
       $producto_nid = $entity->get('field_producto')->target_id;
       $cantidad = $entity->hasField('field_cantidad') ? (int) $entity->get('field_cantidad')->value : 1;
