@@ -9,22 +9,33 @@ function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
   if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'transacion') {
     \Drupal::logger('friasya')->notice('hook_entity_insert ejecutado para transacion.');
 
-    // Validar existencia del campo de referencia
+    // Validar que el campo de referencia exista y tenga valor.
     if (!$entity->hasField('field_productos') || $entity->get('field_productos')->isEmpty()) {
       \Drupal::logger('friasya')->warning('Transacion sin producto asociado.');
       return;
     }
 
-    // Obtener ID del producto referenciado
+    // Cargar el nodo producto.
     $producto_nid = $entity->get('field_productos')->target_id;
     $producto = Node::load($producto_nid);
 
-    if (!$producto || $producto->bundle() !== 'producto') {
-      \Drupal::logger('friasya')->warning('Producto inválido o no encontrado: @nid', ['@nid' => $producto_nid]);
+    // Validaciones seguras.
+    if (!$producto) {
+      \Drupal::logger('friasya')->warning('Producto no encontrado: @nid', ['@nid' => $producto_nid]);
       return;
     }
 
-    // Obtener la cantidad desde el campo
+    if (!($producto instanceof \Drupal\node\Entity\Node)) {
+      \Drupal::logger('friasya')->warning('Entidad cargada no es un nodo válido: @nid', ['@nid' => $producto_nid]);
+      return;
+    }
+
+    if ($producto->bundle() !== 'producto') {
+      \Drupal::logger('friasya')->warning('El nodo @nid no es del tipo producto.', ['@nid' => $producto_nid]);
+      return;
+    }
+
+    // Obtener cantidad.
     $cantidad = 1;
     if ($entity->hasField('field_cantidad') && !$entity->get('field_cantidad')->isEmpty()) {
       $valor = (int) $entity->get('field_cantidad')->value;
@@ -38,7 +49,7 @@ function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
       '@cantidad' => $cantidad,
     ]);
 
-    // Verificar y actualizar el stock
+    // Actualizar el stock.
     if ($producto->hasField('field_stock') && !$producto->get('field_stock')->isEmpty()) {
       $stock_actual = (int) $producto->get('field_stock')->value;
       $nuevo_stock = max(0, $stock_actual - $cantidad);
