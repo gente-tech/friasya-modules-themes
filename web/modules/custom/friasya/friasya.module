@@ -73,3 +73,16 @@ function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
   }
 }
 
+/**
+ * Implements hook_theme().
+ */
+function friasya_theme($existing, $type, $theme, $path) {
+  return [
+    'friasya_form_venta' => [
+      'render element' => 'form',
+      'template' => 'friasya-form-venta',
+      'path' => drupal_get_path('module', 'friasya') . '/templates',
+    ],
+  ];
+}
+
