@@ -1,0 +1,7 @@
+friasya.agregar_venta:
+  path: '/agregar/venta'
+  defaults:
+    _controller: '\Drupal\friasya\Controller\VentaController::build'
+    _title: 'Nueva Venta'
+  requirements:
+    _permission: 'access content'
