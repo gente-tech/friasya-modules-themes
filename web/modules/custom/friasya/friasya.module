@@ -7,28 +7,29 @@ use Drupal\node\Entity\Node;
  */
 function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
   if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'transacion') {
-    \Drupal::logger('friasya')->notice('hook_entity_insert ejecutado para transacción.');
+    \Drupal::logger('friasya')->notice('hook_entity_insert ejecutado para transacion.');
 
-    // Validar campo field_productos (referencia al producto).
+    // Validar existencia del campo de referencia
     if (!$entity->hasField('field_productos') || $entity->get('field_productos')->isEmpty()) {
-      \Drupal::logger('friasya')->warning('Transacción sin producto asociado.');
+      \Drupal::logger('friasya')->warning('Transacion sin producto asociado.');
       return;
     }
 
-    // Obtener el nodo producto.
+    // Obtener ID del producto referenciado
     $producto_nid = $entity->get('field_productos')->target_id;
     $producto = Node::load($producto_nid);
+
     if (!$producto || $producto->bundle() !== 'producto') {
       \Drupal::logger('friasya')->warning('Producto inválido o no encontrado: @nid', ['@nid' => $producto_nid]);
       return;
     }
 
-    // Obtener cantidad.
+    // Obtener la cantidad desde el campo
     $cantidad = 1;
     if ($entity->hasField('field_cantidad') && !$entity->get('field_cantidad')->isEmpty()) {
-      $cantidad_valor = (int) $entity->get('field_cantidad')->value;
-      if ($cantidad_valor > 0) {
-        $cantidad = $cantidad_valor;
+      $valor = (int) $entity->get('field_cantidad')->value;
+      if ($valor > 0) {
+        $cantidad = $valor;
       }
     }
 
@@ -37,16 +38,16 @@ function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
       '@cantidad' => $cantidad,
     ]);
 
-    // Verificar y actualizar el stock.
+    // Verificar y actualizar el stock
     if ($producto->hasField('field_stock') && !$producto->get('field_stock')->isEmpty()) {
       $stock_actual = (int) $producto->get('field_stock')->value;
+      $nuevo_stock = max(0, $stock_actual - $cantidad);
 
       \Drupal::logger('friasya')->notice('Stock actual del producto @nid: @stock', [
         '@nid' => $producto_nid,
         '@stock' => $stock_actual,
       ]);
 
-      $nuevo_stock = max(0, $stock_actual - $cantidad);
       $producto->set('field_stock', $nuevo_stock);
       $producto->save();
 
@@ -56,7 +57,7 @@ function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
       ]);
     }
     else {
-      \Drupal::logger('friasya')->warning('El producto @nid no tiene field_stock configurado o está vacío.', ['@nid' => $producto_nid]);
+      \Drupal::logger('friasya')->warning('El producto @nid no tiene field_stock o está vacío.', ['@nid' => $producto_nid]);
     }
   }
 }
