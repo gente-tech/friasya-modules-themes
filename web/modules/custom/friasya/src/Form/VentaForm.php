@@ -7,6 +7,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 
+/**
+ * Formulario para registrar una venta desde /agregar/venta.
+ */
 class VentaForm extends FormBase {
 
   public function getFormId() {
@@ -54,16 +57,29 @@ class VentaForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $producto_nid = $form_state->getValue('producto');
-    $cantidad = $form_state->getValue('cantidad');
+    $cantidad = (int) $form_state->getValue('cantidad');
     $metodo_tid = $form_state->getValue('metodo_pago');
     $direccion = $form_state->getValue('direccion');
 
+    // Obtener valor unitario del producto.
+    $producto = Node::load($producto_nid);
+    $valor_unitario = 0;
+    if ($producto && $producto->hasField('field_valor') && !$producto->get('field_valor')->isEmpty()) {
+      $valor_unitario = (int) $producto->get('field_valor')->value;
+    }
+
+    // Calcular valor total.
+    $valor_total = $valor_unitario * $cantidad;
+
+    // Crear el nodo transacción.
     $node = Node::create([
       'type' => 'transacion',
       'title' => 'Compra de producto',
       'field_productos' => ['target_id' => $producto_nid],
       'field_cantidad' => $cantidad,
       'field_metodo_pago' => ['target_id' => $metodo_tid],
+      'field_valor' => $valor_total,
+      'field_tipo' => ['target_id' => $this->getTermIdByName('Ingreso', 'tipos_de_transacciones')],
       'body' => [
         'value' => $direccion,
         'format' => 'basic_html',
@@ -83,4 +99,14 @@ class VentaForm extends FormBase {
     }
     return $options;
   }
+
+  protected function getTermIdByName($name, $vocab) {
+    $terms = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties([
+      'name' => $name,
+      'vid' => $vocab,
+    ]);
+    $term = reset($terms);
+    return $term ? $term->id() : NULL;
+  }
 }
+
