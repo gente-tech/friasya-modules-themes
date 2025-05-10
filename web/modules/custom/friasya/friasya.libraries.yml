@@ -1,0 +1,5 @@
+form_venta:
+  version: 1.x
+  css:
+    theme:
+      css/friasya-venta.css: {}
