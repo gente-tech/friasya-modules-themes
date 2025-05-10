@@ -81,7 +81,7 @@ function friasya_theme($existing, $type, $theme, $path) {
     'friasya_form_venta' => [
       'render element' => 'form',
       'template' => 'friasya-form-venta',
-      'path' => drupal_get_path('module', 'friasya') . '/templates',
+      'path' => \Drupal::service('extension.list.module')->getPath('friasya') . '/templates',
     ],
   ];
 }
