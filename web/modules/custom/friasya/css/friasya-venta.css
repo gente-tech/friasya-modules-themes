@@ -1,0 +1,61 @@
+.form-friasya-venta {
+  background: linear-gradient(to bottom, #e6f2f8, #ffffff);
+  border: 2px solid #29c86f;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 0 15px rgba(5, 73, 111, 0.2);
+  font-family: 'Arial', sans-serif;
+}
+
+.form-friasya-venta .form-title {
+  text-align: center;
+  color: #05496f;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-friasya-venta .form-descripcion {
+  text-align: center;
+  font-style: italic;
+  color: #29c86f;
+  margin-bottom: 1.5rem;
+}
+
+.form-friasya-venta .form-wrap .form-item {
+  margin-bottom: 1rem;
+}
+
+.form-friasya-venta label {
+  color: #05496f;
+  font-weight: bold;
+}
+
+.form-friasya-venta input[type="text"],
+.form-friasya-venta input[type="number"],
+.form-friasya-venta textarea,
+.form-friasya-venta select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 0.8rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-friasya-venta .btn-friasya input[type="submit"] {
+  background-color: #29c86f;
+  color: white;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+.form-friasya-venta .btn-friasya input[type="submit"]:hover {
+  background-color: #1fa958;
+}
