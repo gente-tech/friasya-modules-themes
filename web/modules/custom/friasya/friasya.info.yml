@@ -1,7 +1,14 @@
 name: Friasya
 type: module
-description: 'Actualiza el stock de productos al crear ventas.'
+description: 'Módulo personalizado para ventas y control de stock en FriasYa.'
 core_version_requirement: ^10
 package: Custom
 dependencies:
   - node
+  - taxonomy
+
+# Declaración de rutas y plantillas personalizadas
+libraries:
+  - friasya/form_venta
+
+# Twig templates (activación del tema si es necesario)
