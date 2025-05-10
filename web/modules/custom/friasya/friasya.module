@@ -6,20 +6,47 @@ use Drupal\node\Entity\Node;
  * Implementa hook_entity_insert().
  */
 function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
-  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'transacion') {
+  // Verificar que es un nodo del tipo "transaccion".
+  if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'transaccion') {
+
+    // Validar que tenga el campo field_producto.
     if ($entity->hasField('field_producto') && !$entity->get('field_producto')->isEmpty()) {
       $producto_nid = $entity->get('field_producto')->target_id;
-      $cantidad = $entity->hasField('field_cantidad') ? (int) $entity->get('field_cantidad')->value : 1;
+      \Drupal::logger('friasya')->notice('Producto referenciado: @nid', ['@nid' => $producto_nid]);
 
+      // Obtener cantidad (por defecto 1 si no está presente o es inválido).
+      $cantidad = 1;
+      if ($entity->hasField('field_cantidad') && !$entity->get('field_cantidad')->isEmpty()) {
+        $cantidad_valor = (int) $entity->get('field_cantidad')->value;
+        if ($cantidad_valor > 0) {
+          $cantidad = $cantidad_valor;
+        }
+      }
+
+      // Cargar el nodo producto y actualizar stock.
       /** @var \Drupal\node\Entity\Node $producto */
       $producto = Node::load($producto_nid);
       if ($producto && $producto->bundle() === 'producto') {
-        if ($producto->hasField('field_stock')) {
+        if ($producto->hasField('field_stock') && !$producto->get('field_stock')->isEmpty()) {
           $stock_actual = (int) $producto->get('field_stock')->value;
-          $producto->set('field_stock', max(0, $stock_actual - $cantidad));
+          \Drupal::logger('friasya')->notice('Stock antes: @stock', ['@stock' => $stock_actual]);
+
+          $nuevo_stock = max(0, $stock_actual - $cantidad);
+          $producto->set('field_stock', $nuevo_stock);
           $producto->save();
+
+          \Drupal::logger('friasya')->notice('Stock actualizado a: @nuevo', ['@nuevo' => $nuevo_stock]);
+        }
+        else {
+          \Drupal::logger('friasya')->warning('El producto @nid no tiene field_stock configurado.', ['@nid' => $producto_nid]);
         }
       }
+      else {
+        \Drupal::logger('friasya')->warning('No se pudo cargar el nodo producto con NID @nid.', ['@nid' => $producto_nid]);
+      }
+    }
+    else {
+      \Drupal::logger('friasya')->warning('Transacción creada sin field_producto válido.');
     }
   }
 }
