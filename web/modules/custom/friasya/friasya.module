@@ -30,8 +30,8 @@ function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
       return;
     }
 
-    if ($producto->bundle() !== 'producto') {
-      \Drupal::logger('friasya')->warning('El nodo @nid no es del tipo producto.', ['@nid' => $producto_nid]);
+    if ($producto->bundle() !== 'p') {
+      \Drupal::logger('friasya')->warning('El nodo @nid no es del tipo p.', ['@nid' => $producto_nid]);
       return;
     }
 
@@ -72,3 +72,4 @@ function friasya_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
     }
   }
 }
+
