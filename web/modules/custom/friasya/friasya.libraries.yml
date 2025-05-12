@@ -9,3 +9,6 @@ productos:
     js/productos.js: {}
   dependencies:
     - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/once
