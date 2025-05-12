@@ -59,3 +59,49 @@
 .form-friasya-venta .btn-friasya input[type="submit"]:hover {
   background-color: #1fa958;
 }
+
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.producto-item {
+  background: #f9f9f9;
+  border-radius: 15px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.producto-img {
+  max-width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.producto-title {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.producto-cantidad {
+  width: 60px;
+  margin-bottom: 10px;
+}
+
+.producto-btn {
+  background-color: #0a66c2;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.producto-btn:hover {
+  background-color: #004a99;
+}
+
