@@ -3,3 +3,12 @@ form_venta:
   css:
     theme:
       css/friasya-venta.css: {}
+productos:
+  version: 1.x
+  css:
+    theme:
+      css/productos.css: {}
+  js:
+    js/productos.js: {}
+  dependencies:
+    - core/jquery
