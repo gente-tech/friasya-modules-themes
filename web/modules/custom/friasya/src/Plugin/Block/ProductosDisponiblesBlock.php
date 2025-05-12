@@ -18,6 +18,7 @@ class ProductosDisponiblesBlock extends BlockBase {
   public function build() {
     $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
     $nids = $query
+      ->accessCheck(TRUE) // <--- esta línea es obligatoria ahora
       ->condition('type', 'p')
       ->condition('status', 1)
       ->exists('field_stock')
