@@ -83,6 +83,10 @@ function friasya_theme($existing, $type, $theme, $path) {
       'template' => 'friasya-form-venta',
       'path' => \Drupal::service('extension.list.module')->getPath('friasya') . '/templates',
     ],
+    'productos_disponibles' => [
+      'variables' => ['productos' => []],
+      'template' => 'productos-disponibles',
+    ],
   ];
 }
 
