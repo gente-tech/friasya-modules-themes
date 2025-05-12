@@ -1,0 +1,12 @@
+<div class="productos-grid">
+  {% for producto in productos %}
+    <div class="producto-item">
+      <img src="{{ producto.imagen_url }}" alt="{{ producto.title }}" class="producto-img"/>
+      <h3 class="producto-title">{{ producto.title }}</h3>
+      <input type="number" min="1" value="1" class="producto-cantidad" data-nid="{{ producto.nid }}"/>
+      <button class="producto-btn" data-nid="{{ producto.nid }}">
+        {{ producto.precio|number_format(0, ',', '.') }} COP 🛒
+      </button>
+    </div>
+  {% endfor %}
+</div>
