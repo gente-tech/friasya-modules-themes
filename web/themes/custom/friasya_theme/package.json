@@ -1,0 +1,23 @@
+{
+  "name": "friasya_theme",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "vite:dev": "vite",
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sass": "1.79.2",
+    "vite": "^5.4.14",
+    "vite-plugin-copy": "0.1.6"
+  },
+  "dependencies": {
+    "@babel/preset-env": "7.25.4",
+    "modern-normalize": "3.0.1",
+    "swiper": "11.1.14",
+    "vite-plugin-static-copy": "1.0.6"
+  }
+}

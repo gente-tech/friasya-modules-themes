@@ -1,0 +1,22 @@
+@mixin media($media: sm, $type: max) {
+  @if type-of($media) == number {
+    @if unitless($media) {
+      @media only screen and (#{$type}-width: #{$media}px) {
+        @content;
+      }
+    }
+  } @else {
+    $media-value: map-get($mediaqueries, $media);
+    @if $media-value == null {
+      @warn "No value found in \$mediaqueries for '#{$media}'";
+    } @else if type-of($media-value) == number {
+      @media only screen and (#{$type}-width: #{$media-value}px) {
+        @content;
+      }
+    } @else if type-of($media-value) == string {
+      @media #{$media-value} {
+        @content;
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+// Status Colors
+$error-color: #ff2232;
+$success-color: #10b981;
+$warning-color: #f59e0b;
+
+// Background Colors
+$bg-color-white: #ffffff;
+
+// Text Colors
+$text-color-white: #ffffff;
+$text-color-full-black: #000000;
+
+// Border Colors
+$border-full-black: #000000;
+$border-gray: #d2d2d2;
+$border-color-golden-orange: #ffa131;
+
+// Shadow Colors
+$shadow-color-full-black: #000000;
+
+// Checkbox
+$checkbox-color-mint-green: #91e2c5;
+
+// Placeholders
+$placeholder-color-light-gray: #cacaca;
+
+// Media Queries
+$mediaqueries: (
+  sm: 576,
+  md: 768,
+  lg: 992,
+  xl: 1200,
+  xxl: 1400,
+  xxxl: 1500,
+);
+
+// Fonts
+$roboto: "Roboto";

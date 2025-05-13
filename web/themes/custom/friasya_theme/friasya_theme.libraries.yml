@@ -1,0 +1,16 @@
+global-styling:
+  version: 1.0.0
+  js:
+    dist/js/main.bundle.js: { attributes: { defer: true }, minified: true }
+    dist/js/drupal/jquery.validate.js: { attributes: { defer: true }, minified: true }
+    dist/js/drupal/f.contact.js: { attributes: { defer: true }, minified: true }
+    dist/js/drupal/validate.js: { attributes: { defer: true }, minified: true }
+    dist/js/drupal/form-campaing.js: { attributes: { defer: true }, minified: true }
+    dist/js/drupal/form-input-validate-campaing.js:
+      { attributes: { defer: true }, minified: true }
+  css:
+    base:
+      dist/css/main.css: {}
+  dependencies:
+    - core/drupal
+    - code/jquery

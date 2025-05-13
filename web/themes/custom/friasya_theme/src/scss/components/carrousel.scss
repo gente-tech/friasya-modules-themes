@@ -1,0 +1,68 @@
+.carrousel {
+  &__container {
+    margin: 0 auto;
+    width: 90%;
+    margin-top: 3rem;
+  }
+  &__item {
+    position: relative;
+
+    h2,
+    p {
+      position: relative;
+      z-index: 10;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 7px 10px 0 10px;
+      text-align: center;
+
+      &.font--white {
+        color: #fff;
+      }
+    }
+
+    p {
+      padding: 10px 10px 0 10px;
+      font-size: 12px;
+      font-weight: 400;
+      max-width: 145px;
+
+      &.font--white {
+        color: #fff;
+      }
+    }
+
+    picture {
+      position: absolute;
+      top: 0;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.swiper {
+  width: 100%;
+  margin-left: 1rem;
+}
+
+.swiper-slide {
+  width: 190px !important; /* Ancho exacto como pediste */
+  height: 110px !important; /* Alto exacto como pediste */
+  overflow: hidden;
+
+  &:first-child {
+    margin-left: 15px;
+  }
+
+  &:last-child {
+    margin-right: 15px;
+  }
+}
