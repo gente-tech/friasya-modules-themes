@@ -1,8 +1,50 @@
 {% block header %}
-	{{ page.header }}
+	<header>
+		<div class="header">
+			<div class="header__container">
+				<div class="header__content">
+					{{ page.header }}
+					<picture>
+						<source media="(max-width: 767px)" srcset="{{ directory }}/dist/assets/images/tmp-logo.svg">
+						<img src="{{ directory }}/dist/assets/images/tmp-logo.svg" alt="Friasya Logo">
+					</picture>
+				</div>
+			</div>
+		</div>
+	</header>
 {% endblock %}
 
 {% block content %}
+	<section class="carrousel">
+		<div class="carrousel__container swiper">
+			<div class="carrousel__content swiper-wrapper">
+				<div class="carrousel__item swiper-slide">
+					<h2>Fiesta Lujosa 1</h2>
+					<p>Los mejores licores y cervezas para disfrutar una buena fiesta</p>
+					<picture>
+						<source media="(max-width: 767px)" srcset="{{ directory }}/dist/assets/images/tmp-carrousel-club-colombia-bg.jpg">
+						<img src="{{ directory }}/dist/assets/images/tmp-carrousel-club-colombia-bg.jpg" alt="Carrousel Club Colombia">
+					</picture>
+				</div>
+				<div class="carrousel__item swiper-slide">
+					<h2 class="font--white">Para estar con amigos 2</h2>
+					<p class="font--white">Unos six pack’s de aguila y otros de costeñita para pasarlo bacano</p>
+					<picture>
+						<source media="(max-width: 767px)" srcset="{{ directory }}/dist/assets/images/tmp-carrousel-jhonnie-walker-bg.jpg">
+						<img src="{{ directory }}/dist/assets/images/tmp-carrousel-jhonnie-walker-bg.jpg" alt="Carrousel Club Colombia">
+					</picture>
+				</div>
+				<div class="carrousel__item swiper-slide">
+					<h2>Para estar con amigos 3</h2>
+					<p>Los mejores licores y cervezas para disfrutar una buena fiesta</p>
+					<picture>
+						<source media="(max-width: 767px)" srcset="{{ directory }}/dist/assets/images/tmp-carrousel-club-colombia-bg.jpg">
+						<img src="{{ directory }}/dist/assets/images/tmp-carrousel-club-colombia-bg.jpg" alt="Carrousel Club Colombia">
+					</picture>
+				</div>
+			</div>
+		</div>
+	</section>
   {{ page.content }}
 {% endblock %}
 
