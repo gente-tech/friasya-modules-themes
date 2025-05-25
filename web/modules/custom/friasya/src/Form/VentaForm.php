@@ -87,7 +87,7 @@ class VentaForm extends FormBase {
 
     $node->save();
     $this->messenger()->addStatus($this->t('Transacción creada correctamente.'));
-    $form_state->setRedirect('friasya.venta_form');
+    $form_state->setRedirect('friasya.agregar_venta');
   }
 
   protected function getMetodosDePagoOptions() {
