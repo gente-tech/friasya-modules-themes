@@ -4,4 +4,4 @@ friasya.agregar_venta:
     _controller: '\Drupal\friasya\Controller\VentaController::build'
     _title: 'Nueva Venta'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
