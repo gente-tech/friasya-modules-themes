@@ -13,19 +13,20 @@ class ReporteVentasController extends ControllerBase {
     $fecha = $fecha_param ? strtotime($fecha_param) : strtotime('now');
 
     if ($fecha_param && strlen($fecha_param) === 7) {
-      $end = strtotime('+1 month', $fecha);
+      // Vista mensual
+      $start = strtotime($fecha_param . '-01');
+      $end = strtotime('+1 month', $start);
     } else {
-      $end = strtotime('+7 days', $fecha);
+      // Vista semanal según la fecha proporcionada
+      $start = strtotime('monday this week', $fecha);
+      $end = strtotime('sunday this week +1 day', $fecha);
     }
-
-    $start = $fecha;
 
     \Drupal::logger('reporte_ventas')->notice('Fechas: @start - @end', [
       '@start' => date('Y-m-d H:i:s', $start),
       '@end' => date('Y-m-d H:i:s', $end),
     ]);
 
-    // Cargar transacciones en ese rango de tiempo
     $nids = \Drupal::entityQuery('node')
       ->accessCheck(TRUE)
       ->condition('type', 'transacion')
@@ -66,3 +67,4 @@ class ReporteVentasController extends ControllerBase {
     ];
   }
 }
+
