@@ -6,12 +6,12 @@
       once('productosClick', '.producto-btn', context).forEach(function (element) {
         $(element).on('click', function () {
           const nid = $(this).data('nid');
-          const cantidad = $(this).siblings('.producto-cantidad').val();
+          const cantidad = $(this).closest('.producto-item').find('.producto-cantidad').val();
           alert('Producto NID ' + nid + ' - Cantidad: ' + cantidad);
         });
       });
 
-      // FUNCIONALIDAD 2: Cálculo en inputs de costo unitario
+      // FUNCIONALIDAD 2: Cálculo en inputs de costo unitario (tabla de reporte)
       once('calculoReporte', '.costo-input', context).forEach(function (element) {
         $(element).on('input', function () {
           const $row = $(this).closest('tr');
@@ -35,7 +35,22 @@
         });
       });
 
-      // Ejecutar una vez al cargar
+      // FUNCIONALIDAD 3: Calcular total en tarjetas de producto (productos_disponibles)
+      once('productosCantidad', '.producto-cantidad', context).forEach(function (element) {
+        $(element).on('input', function () {
+          const $item = $(this).closest('.producto-item');
+          const cantidad = parseInt($(this).val()) || 0;
+          const $btn = $item.find('.producto-btn');
+          const precioUnitario = parseFloat($btn.data('precio')) || 0;
+          const total = cantidad * precioUnitario;
+
+          $item.find('.precio-unitario').text('Precio: $' + precioUnitario.toLocaleString());
+          $item.find('.precio-total').text('Total: $' + total.toLocaleString());
+          $btn.text('Agregar (' + cantidad + ') - Total: $' + total.toLocaleString());
+        });
+      });
+
+      // Ejecutar al cargar para inicializar totales si hay datos precargados
       actualizarTotales();
     }
   };
@@ -60,6 +75,7 @@
     $('.total-reinversion').text('$' + totalReinversion.toLocaleString());
   }
 })(jQuery, Drupal, once);
+
 
 
 
