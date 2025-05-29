@@ -19,6 +19,7 @@ class ReporteVentasController extends ControllerBase {
 
     // Cargar transacciones en ese rango de tiempo
     $nids = \Drupal::entityQuery('node')
+      ->accessCheck(TRUE)
       ->condition('type', 'transaccion')
       ->condition('created', $start, '>=')
       ->condition('created', $end, '<')
