@@ -12,3 +12,13 @@ productos:
     - core/drupal
     - core/drupalSettings
     - core/once
+weekly_report:
+  css:
+    theme:
+      css/friasya-weekly-report.css: {}
+  js:
+    js/productos.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once
