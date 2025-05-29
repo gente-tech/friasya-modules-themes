@@ -22,3 +22,15 @@ weekly_report:
     - core/jquery
     - core/drupal
     - core/once
+carrito:
+  version: 1.x
+  css:
+    theme:
+      css/friasya-venta.css: {}
+  js:
+    js/carrito.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/once
