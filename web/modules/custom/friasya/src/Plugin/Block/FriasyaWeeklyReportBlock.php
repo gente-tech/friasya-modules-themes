@@ -12,7 +12,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
  *
  * @Block(
  *   id = "friasya_weekly_report_block",
- *   admin_label = @Translation("Reporte semanal de ventas y stock (Friasya)")
+ *   admin_label = @Translation("Reporte de stock (Friasya)")
  * )
  */
 class FriasyaWeeklyReportBlock extends BlockBase implements ContainerFactoryPluginInterface {
