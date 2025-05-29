@@ -64,6 +64,9 @@ class ReporteVentasController extends ControllerBase {
       '#productos' => $productos,
       '#fecha' => date('Y-m-d', $start),
       '#attached' => ['library' => ['friasya/weekly_report']],
+      '#cache' => [
+        'max-age' => 0,
+      ],
     ];
   }
 }
