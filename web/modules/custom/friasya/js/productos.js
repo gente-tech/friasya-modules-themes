@@ -9,3 +9,23 @@
     }
   };
 })(jQuery, Drupal);
+
+(function ($) {
+  $(document).ready(function () {
+    $('.costo-input').on('input', function () {
+      const row = $(this).closest('tr');
+      const precio = parseInt($(this).data('precio'));
+      const cantidad = parseInt($(this).data('cantidad'));
+      const costo = parseInt($(this).val());
+
+      if (!isNaN(precio) && !isNaN(costo) && !isNaN(cantidad)) {
+        const ganancia = (precio - costo) * cantidad;
+        const reinversion = ganancia / 2;
+
+        row.find('.ganancia').text('$' + ganancia.toLocaleString());
+        row.find('.reinversion').text('$' + reinversion.toLocaleString());
+      }
+    });
+  });
+})(jQuery);
+
