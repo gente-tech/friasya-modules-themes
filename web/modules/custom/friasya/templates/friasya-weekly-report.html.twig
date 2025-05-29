@@ -21,7 +21,12 @@
       {% elseif stock <= 15 %}
         {% set semaforo = 'amarillo' %}
       {% endif %}
-      {% set unidades_vendidas = 24 - stock %}
+      {% set stock_maximo = 24 %}
+      {% if producto.nombre == 'Cerveza Club Colombia Dorada Lata 6 unds x 330 cm3' %}
+        {% set stock_maximo = 16 %}
+      {% endif %}
+      {% set unidades_vendidas = stock_maximo - stock %}
+
       {% set facturacion = (producto.precio + 0) * unidades_vendidas %}
 
       <tr>
