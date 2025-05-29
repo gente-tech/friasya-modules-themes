@@ -1,3 +1,16 @@
+{% set total_ventas = 0 %}
+{% for producto in productos %}
+  {% set total_ventas = total_ventas + (producto.precio + 0) * (producto.vendido + 0) %}
+{% endfor %}
+{% set total_reinversion = (total_ventas * 0.5) %}
+{% set total_ganancia = total_ventas %}
+
+<div class="resumen-reporte">
+  <p><strong>Total ventas semana:</strong> ${{ total_ventas|number_format(0, '.', '.') }}</p>
+  <p><strong>Reinversión sugerida (50%):</strong> ${{ total_reinversion|number_format(0, '.', '.') }}</p>
+  <p><strong>Ganancia estimada:</strong> ${{ total_ganancia|number_format(0, '.', '.') }}</p>
+</div>
+
 <table class="ventas-reporte">
   <thead>
     <tr>
@@ -13,22 +26,35 @@
   </thead>
   <tbody>
     {% for producto in productos %}
-      {% set stock = producto.stock|int %}
-      {% set semaforo = stock <= 4 ? 'rojo' : (stock <= 15 ? 'amarillo' : 'verde') %}
+      {% set stock = producto.stock + 0 %}
+      {% set semaforo = 'verde' %}
+      {% if stock <= 4 %}
+        {% set semaforo = 'rojo' %}
+      {% elseif stock <= 15 %}
+        {% set semaforo = 'amarillo' %}
+      {% endif %}
+
       <tr>
         <td>{{ producto.nombre }}</td>
         <td>{{ stock }}</td>
         <td><span class="semaforo {{ semaforo }}"></span></td>
-        <td>{{ producto.vendido }}</td>
-        <td>${{ producto.precio|number_format }}</td>
+        <td>{{ producto.vendido + 0 }}</td>
+        <td>${{ producto.precio|number_format(0, '.', '.') }}</td>
         <td>
-          <input type="number" class="costo-input" 
-                 data-cantidad="{{ producto.vendido }}"
-                 data-precio="{{ producto.precio }}">
+          <input type="number"
+                 class="costo-input"
+                 data-cantidad="{{ producto.vendido + 0 }}"
+                 data-precio="{{ producto.precio + 0 }}"
+                 placeholder="Costo" />
         </td>
         <td class="ganancia">$0</td>
         <td class="reinversion">$0</td>
       </tr>
+    {% else %}
+      <tr>
+        <td colspan="8"><em>No hay productos registrados.</em></td>
+      </tr>
     {% endfor %}
   </tbody>
 </table>
+
