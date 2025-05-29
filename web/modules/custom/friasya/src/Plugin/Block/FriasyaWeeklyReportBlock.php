@@ -73,7 +73,7 @@ class FriasyaWeeklyReportBlock extends BlockBase implements ContainerFactoryPlug
       '#productos' => $ventas,
       '#attached' => [
         'library' => [
-          'friasya/weekly_report',
+          'friasya/productos',
         ],
       ],
     ];
