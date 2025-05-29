@@ -5,9 +5,6 @@ form_venta:
       css/friasya-venta.css: {}
 productos:
   version: 1.x
-   css:
-    theme:
-      css/friasya-venta.css: {}
   js:
     js/productos.js: {}
   dependencies:
