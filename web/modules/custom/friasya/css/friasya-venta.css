@@ -105,3 +105,13 @@
   background-color: #004a99;
 }
 
+.semaforo {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+.semaforo.rojo { background-color: #ff4d4d; }
+.semaforo.amarillo { background-color: #ffd633; }
+.semaforo.verde { background-color: #33cc33; }
+
