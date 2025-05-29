@@ -3,8 +3,6 @@
 namespace Drupal\friasya\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Database\Connection;
-use Drupal\node\Entity\Node;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -37,35 +35,19 @@ class FriasyaWeeklyReportBlock extends BlockBase implements ContainerFactoryPlug
 
   public function build() {
     $productos = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => 'p']);
-    $transacciones = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => 'transacion']);
-
-    $inicio_semana = strtotime('monday this week');
-    $fin_semana = strtotime('sunday this week');
 
     $ventas = [];
 
     // Inicializar datos por producto
     foreach ($productos as $producto) {
+      $stock = (int) $producto->get('field_stock')->value;
+      $nombre = $producto->label();
+      $stock_maximo = (stripos($nombre, 'club colombia') !== false) ? 16 : 24;
       $ventas[$producto->id()] = [
-        'nombre' => $producto->label(),
-        'stock' => $producto->get('field_stock')->value,
-        'precio' => $producto->get('field_precio')->value,
-        'vendido' => 0,
+        'nombre' => $nombre,
+        'stock' => $stock,
+        'a_retanquear' => max(0, $stock_maximo - $stock),
       ];
-    }
-
-    // Acumular unidades vendidas esta semana
-    foreach ($transacciones as $trans) {
-      $created = $trans->getCreatedTime();
-      if ($created >= $inicio_semana && $created <= $fin_semana) {
-        foreach ($trans->get('field_productos') as $item) {
-          $target = $item->target_id;
-          $cantidad = 1; // Por ahora asumimos 1 unidad por referencia
-          if (isset($ventas[$target])) {
-            $ventas[$target]['vendido'] += $cantidad;
-          }
-        }
-      }
     }
 
     return [
