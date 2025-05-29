@@ -114,4 +114,15 @@
 .semaforo.rojo { background-color: #ff4d4d; }
 .semaforo.amarillo { background-color: #ffd633; }
 .semaforo.verde { background-color: #33cc33; }
+.resumen-reporte {
+  margin-bottom: 1em;
+  padding: 1em;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+.resumen-reporte p {
+  margin: 0.25em 0;
+  font-size: 1rem;
+}
 
