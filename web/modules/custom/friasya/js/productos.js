@@ -2,7 +2,6 @@
   Drupal.behaviors.friasyaWeeklyReport = {
     attach: function (context, settings) {
 
-      // Carrito inicial
       let carrito = {};
 
       // FUNCIONALIDAD 1: Click en botón de producto
@@ -64,7 +63,7 @@
         });
       });
 
-      // POPUP DE CARRITO
+      // Crear popup HTML
       const popup = `
         <div id="popup-carrito" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#fff; padding:20px; border:1px solid #ccc; z-index:9999; max-width:400px; box-shadow: 0 0 20px rgba(0,0,0,0.2);">
           <h3>Resumen del pedido</h3>
@@ -78,6 +77,7 @@
 
       $('body').append(popup);
 
+      // Eventos popup
       $('#abrir-carrito').on('click', function () {
         $('#popup-carrito').show();
       });
@@ -117,7 +117,7 @@
         return mensaje;
       }
 
-      // Ejecutar totales iniciales
+      // Ejecutar al cargar para inicializar totales si hay datos precargados
       actualizarTotales();
     }
   };
@@ -142,6 +142,7 @@
     $('.total-reinversion').text('$' + totalReinversion.toLocaleString());
   }
 })(jQuery, Drupal, once);
+
 
 
 
