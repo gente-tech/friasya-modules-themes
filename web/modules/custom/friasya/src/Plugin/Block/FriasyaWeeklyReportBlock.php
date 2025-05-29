@@ -60,7 +60,7 @@ class FriasyaWeeklyReportBlock extends BlockBase implements ContainerFactoryPlug
       if ($created >= $inicio_semana && $created <= $fin_semana) {
         foreach ($trans->get('field_productos') as $item) {
           $target = $item->target_id;
-          $cantidad = $item->get('target_revision_id') ? 1 : 1;
+          $cantidad = 1; // Por ahora asumimos 1 unidad por referencia
           if (isset($ventas[$target])) {
             $ventas[$target]['vendido'] += $cantidad;
           }
