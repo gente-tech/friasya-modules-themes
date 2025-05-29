@@ -105,24 +105,112 @@
   background-color: #004a99;
 }
 
+/* ==== ESTILO GENERAL ==== */
+.ventas-reporte {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  color: #222;
+}
+
+.ventas-reporte thead {
+  background-color: #007c91; /* Azul corporativo */
+  color: white;
+}
+
+.ventas-reporte th, .ventas-reporte td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.ventas-reporte tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+.ventas-reporte tbody tr:hover {
+  background-color: #e6f7f9;
+}
+
+.ventas-reporte tfoot {
+  background-color: #f1f1f1;
+  font-weight: bold;
+  border-top: 2px solid #007c91;
+}
+
+.ventas-reporte tfoot td, .ventas-reporte tfoot th {
+  text-align: right;
+  padding-right: 15px;
+}
+
+/* ==== INPUT DE COSTO ==== */
+.costo-input {
+  width: 100px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: right;
+  transition: all 0.3s ease;
+}
+
+.costo-input:focus {
+  outline: none;
+  border-color: #007c91;
+  box-shadow: 0 0 4px rgba(0, 124, 145, 0.5);
+}
+
+/* ==== SEMÁFORO ==== */
 .semaforo {
   display: inline-block;
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
 }
-.semaforo.rojo { background-color: #ff4d4d; }
-.semaforo.amarillo { background-color: #ffd633; }
-.semaforo.verde { background-color: #33cc33; }
+
+.semaforo.rojo {
+  background-color: #e53935;
+}
+
+.semaforo.amarillo {
+  background-color: #fbc02d;
+}
+
+.semaforo.verde {
+  background-color: #43a047;
+}
+
+/* ==== RESUMEN DE TOTALES ==== */
+.total-facturacion,
+.total-ganancia,
+.total-reinversion {
+  font-weight: bold;
+  color: #007c91;
+}
+
+/* ==== ENCABEZADO DEL REPORTE ==== */
 .resumen-reporte {
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
   padding: 1em;
-  border: 1px solid #ddd;
-  background: #f9f9f9;
-  border-radius: 8px;
+  background: #e0f7fa;
+  border-left: 5px solid #007c91;
+  font-size: 16px;
+  border-radius: 4px;
 }
+
 .resumen-reporte p {
-  margin: 0.25em 0;
-  font-size: 1rem;
+  margin: 0.3em 0;
 }
+
+/* ==== ADICIONALES ==== */
+input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
 
