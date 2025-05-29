@@ -1,16 +1,3 @@
-{% set total_ventas = 0 %}
-{% for producto in productos %}
-  {% set total_ventas = total_ventas + (producto.precio + 0) * (producto.vendido + 0) %}
-{% endfor %}
-{% set total_reinversion = (total_ventas * 0.5) %}
-{% set total_ganancia = total_ventas %}
-
-<div class="resumen-reporte">
-  <p><strong>Total ventas semana:</strong> ${{ total_ventas|number_format(0, '.', '.') }}</p>
-  <p><strong>Reinversión sugerida (50%):</strong> ${{ total_reinversion|number_format(0, '.', '.') }}</p>
-  <p><strong>Ganancia estimada:</strong> ${{ total_ganancia|number_format(0, '.', '.') }}</p>
-</div>
-
 <table class="ventas-reporte">
   <thead>
     <tr>
@@ -20,8 +7,9 @@
       <th>Unidades vendidas</th>
       <th>Precio</th>
       <th>Costo unitario</th>
+      <th>Facturación</th>
       <th>Ganancia</th>
-      <th>Reinversión (50%)</th>
+      <th>Reinversión</th>
     </tr>
   </thead>
   <tbody>
@@ -33,26 +21,29 @@
       {% elseif stock <= 15 %}
         {% set semaforo = 'amarillo' %}
       {% endif %}
+      {% set unidades_vendidas = 24 - stock %}
+      {% set facturacion = (producto.precio + 0) * unidades_vendidas %}
 
       <tr>
         <td>{{ producto.nombre }}</td>
         <td>{{ stock }}</td>
         <td><span class="semaforo {{ semaforo }}"></span></td>
-        <td>{{ producto.vendido + 0 }}</td>
+        <td class="unidades">{{ unidades_vendidas }}</td>
         <td>${{ producto.precio|number_format(0, '.', '.') }}</td>
         <td>
           <input type="number"
                  class="costo-input"
-                 data-cantidad="{{ producto.vendido + 0 }}"
+                 data-cantidad="{{ unidades_vendidas }}"
                  data-precio="{{ producto.precio + 0 }}"
                  placeholder="Costo" />
         </td>
+        <td class="facturacion">${{ facturacion|number_format(0, '.', '.') }}</td>
         <td class="ganancia">$0</td>
         <td class="reinversion">$0</td>
       </tr>
     {% else %}
       <tr>
-        <td colspan="8"><em>No hay productos registrados.</em></td>
+        <td colspan="9"><em>No hay productos registrados.</em></td>
       </tr>
     {% endfor %}
   </tbody>
