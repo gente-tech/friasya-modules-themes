@@ -93,6 +93,10 @@ function friasya_theme($existing, $type, $theme, $path) {
       'template' => 'friasya-weekly-report',
       'path' => \Drupal::service('extension.list.module')->getPath('friasya') . '/templates',
     ],
+    'reporte_ventas' => [
+      'variables' => ['productos' => [], 'fecha' => ''],
+      'template' => 'reporte-ventas',
+    ],
   ];
 }
 
