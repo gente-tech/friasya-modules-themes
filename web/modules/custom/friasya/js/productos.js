@@ -1,37 +1,41 @@
-(function ($, Drupal) {
+(function ($, Drupal, once) {
   Drupal.behaviors.friasyaWeeklyReport = {
     attach: function (context, settings) {
 
-      // === FUNCIONALIDAD: Click en botón de producto ===
-      $('.producto-btn', context).once('productosClick').on('click', function () {
-        const nid = $(this).data('nid');
-        const cantidad = $(this).siblings('.producto-cantidad').val();
-        alert('Producto NID ' + nid + ' - Cantidad: ' + cantidad);
+      // FUNCIONALIDAD 1: Click en botón de producto
+      once('productosClick', '.producto-btn', context).forEach(function (element) {
+        $(element).on('click', function () {
+          const nid = $(this).data('nid');
+          const cantidad = $(this).siblings('.producto-cantidad').val();
+          alert('Producto NID ' + nid + ' - Cantidad: ' + cantidad);
+        });
       });
 
-      // === FUNCIONALIDAD: Cálculo de totales en la tabla ===
-      $('.costo-input', context).once('calculoReporte').on('input', function () {
-        const $row = $(this).closest('tr');
-        const precio = parseFloat($(this).data('precio'));
-        const cantidad = parseInt($(this).data('cantidad'));
-        const costo = parseFloat($(this).val());
+      // FUNCIONALIDAD 2: Cálculo en inputs de costo unitario
+      once('calculoReporte', '.costo-input', context).forEach(function (element) {
+        $(element).on('input', function () {
+          const $row = $(this).closest('tr');
+          const precio = parseFloat($(this).data('precio'));
+          const cantidad = parseInt($(this).data('cantidad'));
+          const costo = parseFloat($(this).val());
 
-        if (!isNaN(precio) && !isNaN(costo) && !isNaN(cantidad)) {
-          const facturacion = precio * cantidad;
-          const ganancia = (precio - costo) * cantidad;
-          const reinversion = costo * cantidad;
+          if (!isNaN(precio) && !isNaN(costo) && !isNaN(cantidad)) {
+            const facturacion = precio * cantidad;
+            const ganancia = (precio - costo) * cantidad;
+            const reinversion = costo * cantidad;
 
-          $row.find('.facturacion').text('$' + facturacion.toLocaleString());
-          $row.find('.ganancia').text('$' + ganancia.toLocaleString());
-          $row.find('.reinversion').text('$' + reinversion.toLocaleString());
-        } else {
-          $row.find('.facturacion, .ganancia, .reinversion').text('$0');
-        }
+            $row.find('.facturacion').text('$' + facturacion.toLocaleString());
+            $row.find('.ganancia').text('$' + ganancia.toLocaleString());
+            $row.find('.reinversion').text('$' + reinversion.toLocaleString());
+          } else {
+            $row.find('.facturacion, .ganancia, .reinversion').text('$0');
+          }
 
-        actualizarTotales();
+          actualizarTotales();
+        });
       });
 
-      // Ejecutar al cargar la tabla por primera vez
+      // Ejecutar una vez al cargar
       actualizarTotales();
     }
   };
@@ -55,7 +59,7 @@
     $('.total-ganancia').text('$' + totalGanancia.toLocaleString());
     $('.total-reinversion').text('$' + totalReinversion.toLocaleString());
   }
-})(jQuery, Drupal);
+})(jQuery, Drupal, once);
 
 
 
