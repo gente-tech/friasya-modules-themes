@@ -19,7 +19,7 @@ class ReporteVentasController extends ControllerBase {
     } else {
       // Vista semanal según la fecha proporcionada
       $start = strtotime('monday this week', $fecha);
-      $end = strtotime('sunday this week +1 day', $fecha);
+      $end = strtotime('next monday', $fecha); // incluye todo el domingo
     }
 
     \Drupal::logger('reporte_ventas')->notice('Fechas: @start - @end', [
@@ -67,4 +67,3 @@ class ReporteVentasController extends ControllerBase {
     ];
   }
 }
-
