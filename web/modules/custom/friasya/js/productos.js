@@ -8,24 +8,26 @@
       });
     }
   };
-})(jQuery, Drupal);
-
-(function ($) {
   $(document).ready(function () {
     $('.costo-input').on('input', function () {
-      const row = $(this).closest('tr');
-      const precio = parseInt($(this).data('precio'));
+      const $row = $(this).closest('tr');
+      const precio = parseFloat($(this).data('precio'));
       const cantidad = parseInt($(this).data('cantidad'));
-      const costo = parseInt($(this).val());
+      const costo = parseFloat($(this).val());
 
       if (!isNaN(precio) && !isNaN(costo) && !isNaN(cantidad)) {
+        const facturacion = precio * cantidad;
         const ganancia = (precio - costo) * cantidad;
-        const reinversion = ganancia / 2;
+        const reinversion = costo * cantidad;
 
-        row.find('.ganancia').text('$' + ganancia.toLocaleString());
-        row.find('.reinversion').text('$' + reinversion.toLocaleString());
+        $row.find('.facturacion').text('$' + facturacion.toLocaleString());
+        $row.find('.ganancia').text('$' + ganancia.toLocaleString());
+        $row.find('.reinversion').text('$' + reinversion.toLocaleString());
+      } else {
+        $row.find('.facturacion, .ganancia, .reinversion').text('$0');
       }
     });
   });
-})(jQuery);
+})(jQuery, Drupal);
+
 
