@@ -5,3 +5,11 @@ friasya.agregar_venta:
     _title: 'Nueva Venta'
   requirements:
     _role: 'authenticated'
+
+friasya.reporte_ventas:
+  path: '/reporte/ventas'
+  defaults:
+    _controller: '\Drupal\friasya\Controller\ReporteVentasController::view'
+    _title: 'Reporte de ventas'
+  requirements:
+    _role: 'authenticated'
