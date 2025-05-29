@@ -1,5 +1,7 @@
 form_venta:
   version: 1.x
+   js:
+    js/productos.js: {}
   css:
     theme:
       css/friasya-venta.css: {}
