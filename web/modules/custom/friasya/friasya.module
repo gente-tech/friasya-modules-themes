@@ -88,6 +88,11 @@ function friasya_theme($existing, $type, $theme, $path) {
       'template' => 'productos-disponibles',
       'path' => \Drupal::service('extension.list.module')->getPath('friasya') . '/templates',
     ],
+   'friasya_weekly_report' => [
+      'variables' => ['productos' => NULL],
+      'template' => 'friasya-weekly-report',
+      'path' => drupal_get_path('module', 'friasya') . '/templates',
+    ],
   ];
 }
 
