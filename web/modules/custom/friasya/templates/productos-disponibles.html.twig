@@ -1,21 +1,33 @@
 <div class="productos-grid">
   {% for producto in productos %}
     <div class="producto-item">
-      <img src="{{ producto.imagen_url }}" alt="{{ producto.title }}" class="producto-img"/>
+      <img src="{{ producto.imagen_url }}" alt="{{ producto.title }}" class="producto-img" />
       <h3 class="producto-title">{{ producto.title }}</h3>
-
-      <span class="precio-unitario">Precio: ${{ producto.precio|number_format(0, '.', '.') }}</span>
-
+      <span class="precio-unitario">Precio: ${{ producto.precio|number_format(0, ',', '.') }}</span><br>
       <input type="number" min="1" value="1" class="producto-cantidad" data-nid="{{ producto.nid }}" />
-
-      <span class="precio-total">Total: ${{ producto.precio|number_format(0, '.', '.') }}</span>
-
+      <span class="precio-total"></span><br>
       <button class="producto-btn"
               data-nid="{{ producto.nid }}"
+              data-title="{{ producto.title }}"
               data-precio="{{ producto.precio }}">
-        Agregar (1) - Total: ${{ producto.precio|number_format(0, '.', '.') }}
+        {{ producto.precio|number_format(0, ',', '.') }} COP 🛒
       </button>
     </div>
   {% endfor %}
 </div>
+
+<!-- Botón flotante del carrito -->
+<button id="ver-carrito-btn">🛒 Ver carrito (<span id="cantidad-carrito">0</span>)</button>
+
+<!-- Popup del carrito -->
+<div id="popup-carrito" style="display: none;">
+  <div class="popup-contenido">
+    <h2>Resumen del pedido</h2>
+    <ul id="lista-carrito"></ul>
+    <p><strong>Total:</strong> <span id="total-carrito">$0</span></p>
+    <button id="confirmar-pedido">Confirmar pedido</button>
+    <button id="cerrar-popup">Cerrar</button>
+  </div>
+</div>
+
 
