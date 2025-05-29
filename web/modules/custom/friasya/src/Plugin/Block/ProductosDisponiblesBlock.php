@@ -43,7 +43,7 @@ class ProductosDisponiblesBlock extends BlockBase {
       '#productos' => $items,
       '#attached' => [
         'library' => [
-          'friasya/form_venta',
+          'friasya/carrito',
         ],
       ],
     ];
