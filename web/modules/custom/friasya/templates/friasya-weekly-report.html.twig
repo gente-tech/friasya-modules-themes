@@ -4,12 +4,7 @@
       <th>Producto</th>
       <th>Stock</th>
       <th>Semáforo</th>
-      <th>Unidades vendidas</th>
-      <th>Precio</th>
-      <th>Costo unitario</th>
-      <th>Facturación</th>
-      <th>Ganancia</th>
-      <th>Reinversión</th>
+      <th>Unidades a retanquear</th>
     </tr>
   </thead>
   <tbody>
@@ -21,45 +16,18 @@
       {% elseif stock <= 15 %}
         {% set semaforo = 'amarillo' %}
       {% endif %}
-      {% set stock_maximo = 24 %}
-      {% if producto.nombre == 'Cerveza Club Colombia Dorada Lata 6 unds x 330 cm3' %}
-        {% set stock_maximo = 16 %}
-      {% endif %}
-      {% set unidades_vendidas = stock_maximo - stock %}
-
-      {% set facturacion = (producto.precio + 0) * unidades_vendidas %}
 
       <tr>
         <td>{{ producto.nombre }}</td>
         <td>{{ stock }}</td>
         <td><span class="semaforo {{ semaforo }}"></span></td>
-        <td class="unidades">{{ unidades_vendidas }}</td>
-        <td>${{ producto.precio|number_format(0, '.', '.') }}</td>
-        <td>
-          <input type="number"
-                 class="costo-input"
-                 data-cantidad="{{ unidades_vendidas }}"
-                 data-precio="{{ producto.precio + 0 }}"
-                 placeholder="Costo" />
-        </td>
-        <td class="facturacion">${{ facturacion|number_format(0, '.', '.') }}</td>
-        <td class="ganancia">$0</td>
-        <td class="reinversion">$0</td>
+        <td>{{ producto.a_retanquear }}</td>
       </tr>
     {% else %}
       <tr>
-        <td colspan="9"><em>No hay productos registrados.</em></td>
+        <td colspan="4"><em>No hay productos registrados.</em></td>
       </tr>
     {% endfor %}
   </tbody>
-<tfoot>
-  <tr>
-    <th colspan="6" style="text-align: right;">Totales:</th>
-    <th class="total-facturacion">$0</th>
-    <th class="total-ganancia">$0</th>
-    <th class="total-reinversion">$0</th>
-  </tr>
-</tfoot>
-
 </table>
 
