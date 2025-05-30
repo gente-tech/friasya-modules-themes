@@ -116,7 +116,7 @@
           mensaje += `• ${item.nombre} — ${item.cantidad} unds — 💰 $${subtotal.toLocaleString()}\n`;
         });
         const total = Object.values(carrito).reduce((sum, i) => sum + i.precio * i.cantidad, 0);
-        mensaje += `\n🧾 *Total a pagar:* $${total.toLocaleString()}\n\n¡Gracias! 😊`;
+        mensaje += `\n🧾 *Total a pagar:* $${total.toLocaleString()}\n+domicilio\n\n¡Gracias! 😊`;
         return mensaje;
       }
 
