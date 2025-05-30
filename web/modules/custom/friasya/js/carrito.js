@@ -1,10 +1,9 @@
 (function ($, Drupal, once) {
   Drupal.behaviors.friasyaWeeklyReport = {
     attach: function (context, settings) {
-
       let carrito = {};
 
-      // FUNCIONALIDAD 1: Click en botón de producto
+      // Agregar productos al carrito
       once('productosClick', '.producto-btn', context).forEach(function (element) {
         $(element).on('click', function () {
           const $item = $(this).closest('.producto-item');
@@ -14,17 +13,13 @@
           const cantidad = parseInt($item.find('.producto-cantidad').val()) || 0;
 
           if (cantidad > 0) {
-            carrito[nid] = {
-              nombre,
-              precio,
-              cantidad
-            };
-            actualizarCarrito();
+            carrito[nid] = { nombre, precio, cantidad };
+            actualizarPopupCarrito();
           }
         });
       });
 
-      // FUNCIONALIDAD 2: Cálculo en inputs de costo unitario (tabla de reporte)
+      // Calcular totales en tabla de reporte
       once('calculoReporte', '.costo-input', context).forEach(function (element) {
         $(element).on('input', function () {
           const $row = $(this).closest('tr');
@@ -33,13 +28,9 @@
           const costo = parseFloat($(this).val());
 
           if (!isNaN(precio) && !isNaN(costo) && !isNaN(cantidad)) {
-            const facturacion = precio * cantidad;
-            const ganancia = (precio - costo) * cantidad;
-            const reinversion = costo * cantidad;
-
-            $row.find('.facturacion').text('$' + facturacion.toLocaleString());
-            $row.find('.ganancia').text('$' + ganancia.toLocaleString());
-            $row.find('.reinversion').text('$' + reinversion.toLocaleString());
+            $row.find('.facturacion').text('$' + (precio * cantidad).toLocaleString());
+            $row.find('.ganancia').text('$' + ((precio - costo) * cantidad).toLocaleString());
+            $row.find('.reinversion').text('$' + (costo * cantidad).toLocaleString());
           } else {
             $row.find('.facturacion, .ganancia, .reinversion').text('$0');
           }
@@ -48,7 +39,7 @@
         });
       });
 
-      // FUNCIONALIDAD 3: Calcular total en tarjetas de producto (productos_disponibles)
+      // Actualizar totales en las tarjetas de producto
       once('productosCantidad', '.producto-cantidad', context).forEach(function (element) {
         $(element).on('input', function () {
           const $item = $(this).closest('.producto-item');
@@ -63,22 +54,8 @@
         });
       });
 
-      // Crear popup HTML
-      const popup = `
-        <div id="popup-carrito" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#fff; padding:20px; border:1px solid #ccc; z-index:9999; max-width:400px; box-shadow: 0 0 20px rgba(0,0,0,0.2);">
-          <h3>Resumen del pedido</h3>
-          <ul id="lista-carrito"></ul>
-          <p><strong>Total: </strong><span id="carrito-total">$0</span></p>
-          <button id="confirmar-pedido">Confirmar pedido</button>
-          <button id="cerrar-popup">Cerrar</button>
-        </div>
-        <button id="abrir-carrito" style="position:fixed; bottom:20px; right:20px; z-index:9999; background:#0074d9; color:#fff; border:none; padding:10px 20px; border-radius:5px;">🛒 Ver carrito</button>
-      `;
-
-      $('body').append(popup);
-
-      // Eventos popup
-      $('#abrir-carrito').on('click', function () {
+      // Botones del popup
+      $('#ver-carrito-btn').on('click', function () {
         $('#popup-carrito').show();
       });
 
@@ -92,22 +69,19 @@
         window.open(url, '_blank');
       });
 
-      function actualizarTotalCarrito() {
+      function actualizarPopupCarrito() {
+        const $lista = $('#lista-carrito');
+        $lista.empty();
         let total = 0;
-      
-        $('#carrito-items .carrito-producto').each(function () {
-          const texto = $(this).text();
-          const match = texto.match(/\$([0-9.]+)/);
-      
-          if (match && match[1]) {
-            const valor = parseInt(match[1].replace(/\./g, ''));
-            total += valor;
-          }
-        });
-      
-        $('#carrito-total').text('$' + total.toLocaleString());
-      }
 
+        Object.values(carrito).forEach(item => {
+          const subtotal = item.precio * item.cantidad;
+          total += subtotal;
+          $lista.append(`<li><span class="carrito-producto">${item.nombre} x ${item.cantidad} = $${subtotal.toLocaleString()}</span></li>`);
+        });
+
+        $('#total-carrito').text('Total: $' + total.toLocaleString());
+      }
 
       function construirMensajeWhatsApp() {
         let mensaje = "Hola, deseo confirmar el siguiente pedido:%0A";
@@ -119,28 +93,25 @@
         return mensaje;
       }
 
-      // Ejecutar al cargar para inicializar totales si hay datos precargados
+      function actualizarTotales() {
+        let totalFacturacion = 0;
+        let totalGanancia = 0;
+        let totalReinversion = 0;
+
+        $('table.ventas-reporte tbody tr').each(function () {
+          totalFacturacion += parseInt($(this).find('.facturacion').text().replace(/[^0-9]/g, '') || '0');
+          totalGanancia += parseInt($(this).find('.ganancia').text().replace(/[^0-9]/g, '') || '0');
+          totalReinversion += parseInt($(this).find('.reinversion').text().replace(/[^0-9]/g, '') || '0');
+        });
+
+        $('.total-facturacion').text('$' + totalFacturacion.toLocaleString());
+        $('.total-ganancia').text('$' + totalGanancia.toLocaleString());
+        $('.total-reinversion').text('$' + totalReinversion.toLocaleString());
+      }
+
+      // Inicialización
       actualizarTotales();
     }
   };
-
-  function actualizarTotales() {
-    let totalFacturacion = 0;
-    let totalGanancia = 0;
-    let totalReinversion = 0;
-
-    $('table.ventas-reporte tbody tr').each(function () {
-      const fact = $(this).find('.facturacion').text().replace(/[^0-9]/g, '') || '0';
-      const gan = $(this).find('.ganancia').text().replace(/[^0-9]/g, '') || '0';
-      const reinv = $(this).find('.reinversion').text().replace(/[^0-9]/g, '') || '0';
-
-      totalFacturacion += parseInt(fact);
-      totalGanancia += parseInt(gan);
-      totalReinversion += parseInt(reinv);
-    });
-
-    $('.total-facturacion').text('$' + totalFacturacion.toLocaleString());
-    $('.total-ganancia').text('$' + totalGanancia.toLocaleString());
-    $('.total-reinversion').text('$' + totalReinversion.toLocaleString());
-  }
 })(jQuery, Drupal, once);
+
