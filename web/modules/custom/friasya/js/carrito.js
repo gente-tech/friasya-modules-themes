@@ -1,23 +1,19 @@
 (function ($, Drupal, once) {
   Drupal.behaviors.friasyaWeeklyReport = {
     attach: function (context, settings) {
-
       let carrito = {};
 
-      // Mostrar mensaje de agregado
-      function mostrarMensajeAgregado() {
-        if ($('#mensaje-agregado').length === 0) {
-          $('body').append('<div id="mensaje-agregado" style="position:fixed; top:20px; right:20px; background:#4CAF50; color:white; padding:10px 20px; border-radius:5px; z-index:10000; font-weight:bold;">Producto agregado ✅</div>');
-        } else {
-          $('#mensaje-agregado').show();
-        }
-
+      // Mostrar alerta de agregado
+      function mostrarAlerta(mensaje) {
+        const alerta = $('<div class="alerta-carrito">' + mensaje + '</div>').appendTo('body');
         setTimeout(() => {
-          $('#mensaje-agregado').fadeOut();
+          alerta.fadeOut(500, function () {
+            $(this).remove();
+          });
         }, 3000);
       }
 
-      // Click en botón de producto
+      // Agregar producto al carrito
       once('productosClick', '.producto-btn', context).forEach(function (element) {
         $(element).on('click', function () {
           const $item = $(this).closest('.producto-item');
@@ -27,42 +23,14 @@
           const cantidad = parseInt($item.find('.producto-cantidad').val()) || 0;
 
           if (cantidad > 0) {
-            carrito[nid] = {
-              nombre,
-              precio,
-              cantidad
-            };
+            carrito[nid] = { nombre, precio, cantidad };
+            mostrarAlerta('✔ Producto agregado al carrito');
             actualizarCarrito();
-            mostrarMensajeAgregado();
           }
         });
       });
 
-      // Cálculo reporte
-      once('calculoReporte', '.costo-input', context).forEach(function (element) {
-        $(element).on('input', function () {
-          const $row = $(this).closest('tr');
-          const precio = parseFloat($(this).data('precio'));
-          const cantidad = parseInt($(this).data('cantidad'));
-          const costo = parseFloat($(this).val());
-
-          if (!isNaN(precio) && !isNaN(costo) && !isNaN(cantidad)) {
-            const facturacion = precio * cantidad;
-            const ganancia = (precio - costo) * cantidad;
-            const reinversion = costo * cantidad;
-
-            $row.find('.facturacion').text('$' + facturacion.toLocaleString());
-            $row.find('.ganancia').text('$' + ganancia.toLocaleString());
-            $row.find('.reinversion').text('$' + reinversion.toLocaleString());
-          } else {
-            $row.find('.facturacion, .ganancia, .reinversion').text('$0');
-          }
-
-          actualizarTotales();
-        });
-      });
-
-      // Calcular total por tarjeta de producto
+      // Mostrar precios al cambiar cantidad
       once('productosCantidad', '.producto-cantidad', context).forEach(function (element) {
         $(element).on('input', function () {
           const $item = $(this).closest('.producto-item');
@@ -77,48 +45,57 @@
         });
       });
 
-      // Crear popup
-      if ($('#popup-carrito').length === 0) {
-        const popup = `
-          <div id="popup-carrito" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#fff; padding:20px; border:1px solid #ccc; z-index:9999; max-width:400px; box-shadow: 0 0 20px rgba(0,0,0,0.2);">
-            <h3>Resumen del pedido</h3>
+      // Crear y agregar popup al body
+      const popupHTML = `
+        <div id="popup-carrito" style="display:none;">
+          <div class="popup-contenido">
+            <h2>Resumen del Pedido</h2>
             <ul id="lista-carrito"></ul>
-            <p><strong>Total: </strong><span id="carrito-total">$0</span></p>
+            <p id="total-carrito">Total: $0</p>
             <button id="confirmar-pedido">Confirmar pedido</button>
             <button id="cerrar-popup">Cerrar</button>
           </div>
-          <button id="abrir-carrito" style="position:fixed; bottom:20px; right:20px; z-index:9999; background:#0074d9; color:#fff; border:none; padding:10px 20px; border-radius:5px;">🛒 Ver carrito</button>
-        `;
-        $('body').append(popup);
-      }
+        </div>
+        <button id="ver-carrito-btn">🛒 Ver Carrito</button>
+      `;
+      $('body').append(popupHTML);
 
-      // Eventos popup
-      $('#abrir-carrito').on('click', function () {
-        $('#popup-carrito').show();
+      // Evento botón ver carrito
+      once('abrirCarrito', '#ver-carrito-btn', context).forEach(function (element) {
+        $(element).on('click', function () {
+          actualizarCarrito();
+          $('#popup-carrito').fadeIn();
+        });
       });
 
-      $('#cerrar-popup').on('click', function () {
-        $('#popup-carrito').hide();
+      // Cerrar popup
+      once('cerrarPopup', '#cerrar-popup', context).forEach(function (element) {
+        $(element).on('click', function () {
+          $('#popup-carrito').fadeOut();
+        });
       });
 
-      $('#confirmar-pedido').on('click', function () {
-        const mensaje = construirMensajeWhatsApp();
-        const url = 'https://wa.me/573044318866?text=' + encodeURIComponent(mensaje);
-        window.open(url, '_blank');
+      // Confirmar pedido y abrir WhatsApp
+      once('confirmarPedido', '#confirmar-pedido', context).forEach(function (element) {
+        $(element).on('click', function () {
+          const mensaje = construirMensajeWhatsApp();
+          const url = 'https://wa.me/573044318866?text=' + encodeURIComponent(mensaje);
+          window.open(url, '_blank');
+        });
       });
 
       function actualizarCarrito() {
-        let html = '';
-        let total = 0;
+        const $lista = $('#lista-carrito');
+        $lista.empty();
 
+        let total = 0;
         Object.values(carrito).forEach(item => {
           const subtotal = item.precio * item.cantidad;
-          html += `<li>${item.nombre} x ${item.cantidad} = $${subtotal.toLocaleString()}</li>`;
           total += subtotal;
+          $lista.append(`<li>${item.nombre} x ${item.cantidad} = $${subtotal.toLocaleString()}</li>`);
         });
 
-        $('#lista-carrito').html(html);
-        $('#carrito-total').text('$' + total.toLocaleString());
+        $('#total-carrito').text('Total: $' + total.toLocaleString());
       }
 
       function construirMensajeWhatsApp() {
@@ -131,29 +108,6 @@
         return mensaje;
       }
 
-      actualizarTotales();
     }
   };
-
-  function actualizarTotales() {
-    let totalFacturacion = 0;
-    let totalGanancia = 0;
-    let totalReinversion = 0;
-
-    $('table.ventas-reporte tbody tr').each(function () {
-      const fact = $(this).find('.facturacion').text().replace(/[^0-9]/g, '') || '0';
-      const gan = $(this).find('.ganancia').text().replace(/[^0-9]/g, '') || '0';
-      const reinv = $(this).find('.reinversion').text().replace(/[^0-9]/g, '') || '0';
-
-      totalFacturacion += parseInt(fact);
-      totalGanancia += parseInt(gan);
-      totalReinversion += parseInt(reinv);
-    });
-
-    $('.total-facturacion').text('$' + totalFacturacion.toLocaleString());
-    $('.total-ganancia').text('$' + totalGanancia.toLocaleString());
-    $('.total-reinversion').text('$' + totalReinversion.toLocaleString());
-  }
 })(jQuery, Drupal, once);
-
-
