@@ -92,20 +92,22 @@
         window.open(url, '_blank');
       });
 
-      function actualizarCarrito() {
-        const $lista = $('#lista-carrito');
-        $lista.empty();
-
+      function actualizarTotalCarrito() {
         let total = 0;
-
-        Object.values(carrito).forEach(item => {
-          const subtotal = item.precio * item.cantidad;
-          total += subtotal;
-          $lista.append(`<li>${item.nombre} x ${item.cantidad} = $${subtotal.toLocaleString()}</li>`);
+      
+        $('#carrito-items .carrito-producto').each(function () {
+          const texto = $(this).text();
+          const match = texto.match(/\$([0-9.]+)/);
+      
+          if (match && match[1]) {
+            const valor = parseInt(match[1].replace(/\./g, ''));
+            total += valor;
+          }
         });
-
+      
         $('#carrito-total').text('$' + total.toLocaleString());
       }
+
 
       function construirMensajeWhatsApp() {
         let mensaje = "Hola, deseo confirmar el siguiente pedido:%0A";
