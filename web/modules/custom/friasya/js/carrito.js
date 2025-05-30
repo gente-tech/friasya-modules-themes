@@ -99,14 +99,16 @@
       }
 
       function construirMensajeWhatsApp() {
-        let mensaje = "Hola, deseo confirmar el siguiente pedido:%0A";
+        let mensaje = "🛒 *Hola! Deseo hacer el siguiente pedido:*\n\n📦 *Productos:*\n";
         Object.values(carrito).forEach(item => {
-          mensaje += `- ${item.nombre} x ${item.cantidad} = $${(item.precio * item.cantidad).toLocaleString()}%0A`;
+          const subtotal = item.precio * item.cantidad;
+          mensaje += `• ${item.nombre} — ${item.cantidad} unds — 💰 $${subtotal.toLocaleString()}\n`;
         });
         const total = Object.values(carrito).reduce((sum, i) => sum + i.precio * i.cantidad, 0);
-        mensaje += `%0ATotal: $${total.toLocaleString()}`;
+        mensaje += `\n🧾 *Total a pagar:* $${total.toLocaleString()}\n\n¡Gracias! 😊`;
         return mensaje;
       }
+
 
     }
   };
