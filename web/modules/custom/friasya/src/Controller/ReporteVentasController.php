@@ -12,14 +12,18 @@ class ReporteVentasController extends ControllerBase {
     $fecha_param = $request->query->get('fecha');
     $fecha = $fecha_param ? strtotime($fecha_param) : strtotime('now');
 
-    if ($fecha_param && strlen($fecha_param) === 7) {
+    if ($fecha_param && preg_match('/^\d{4}$/', $fecha_param)) {
+      // Vista anual
+      $start = strtotime($fecha_param . '-01-01');
+      $end = strtotime('+1 year', $start);
+    } elseif ($fecha_param && preg_match('/^\d{4}-\d{2}$/', $fecha_param)) {
       // Vista mensual
       $start = strtotime($fecha_param . '-01');
       $end = strtotime('+1 month', $start);
     } else {
       // Vista semanal según la fecha proporcionada
       $start = strtotime('monday this week', $fecha);
-      $end = strtotime('next monday', $fecha); // incluye todo el domingo
+      $end = strtotime('next monday', $fecha);
     }
 
     \Drupal::logger('reporte_ventas')->notice('Fechas: @start - @end', [
