@@ -53,7 +53,7 @@ class FriasyaWeeklyReportBlock extends BlockBase implements ContainerFactoryPlug
     return [
       '#theme' => 'friasya_weekly_report',
       '#productos' => $ventas,
-      #cache' => [
+      '#cache' => [
         'max-age' => 0,
       ],
       '#attached' => [
