@@ -41,28 +41,32 @@
   </tfoot>
 </table>
 
-<h3>Resumen por método de pago</h3>
-<table class="ventas-metodos">
+<h3>Transacciones separadas por método de pago</h3>
+<table class="ventas-metodos-horizontal">
   <thead>
     <tr>
-      <th>Método de pago</th>
-      <th>Total facturado</th>
+      {% for id, label in metodo_labels %}
+        <th>{{ label }}</th>
+      {% endfor %}
     </tr>
   </thead>
   <tbody>
-    {% set total_general = 0 %}
-    {% for metodo, total in metodos_pago %}
-      {% set total_general = total_general + total %}
+    {% for row in tabla_horizontal %}
       <tr>
-        <td>{{ metodo }}</td>
-        <td>${{ total|number_format }}</td>
+        {% for label in metodo_labels|values %}
+          <td>
+            {% set valor = row[label]|default(0) %}
+            {{ valor > 0 ? ('$' ~ valor|number_format) : '' }}
+          </td>
+        {% endfor %}
       </tr>
     {% endfor %}
   </tbody>
   <tfoot>
     <tr>
-      <th>Total general</th>
-      <th>${{ total_general|number_format }}</th>
+      {% for label in metodo_labels|values %}
+        <th>${{ totales_por_metodo[label]|default(0)|number_format }}</th>
+      {% endfor %}
     </tr>
   </tfoot>
 </table>
