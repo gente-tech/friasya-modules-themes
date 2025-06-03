@@ -43,19 +43,42 @@
 
 <h3>Transacciones separadas por método de pago</h3>
 
-<table class="ventas-metodos-horizontal">
-  <thead>
+<h3 style="margin-top: 2em;">Transacciones separadas por método de pago</h3>
+<table class="ventas-metodos-horizontal" style="width:100%; border-collapse:collapse; border: 1px solid #ccc; font-family: sans-serif; font-size: 14px;">
+  <thead style="background-color:#e8f0fe;">
     <tr>
       {% for id, label in metodo_labels %}
-        <th>{{ label }}</th>
+        <th style="padding: 10px; border: 1px solid #ccc; text-align: left;">{{ label }}</th>
       {% endfor %}
     </tr>
   </thead>
+  <tbody>
+    {% for row in tabla_horizontal %}
+      <tr>
+        {% for id, label in metodo_labels %}
+          {% set entry = row[id]|default({}) %}
+          {% set valor = entry.valor|default(0) %}
+          {% set doms = entry.domicilios|default(0) %}
+          <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+            {% if valor > 0 %}
+              ${{ valor|number_format }}<br><small>Domicilios: {{ doms }}</small>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
   <tfoot>
-    <tr>
+    <tr style="background-color:#f1f1f1; font-weight: bold;">
       {% for id, label in metodo_labels %}
-        <th>${{ totales_por_metodo[id]|default(0)|number_format }}</th>
+        <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
+          ${{ totales_por_metodo[id]|default(0)|number_format }}<br>
+          <small>Domicilios: {{ domicilios_por_metodo[id]|default(0) }}</small>
+        </td>
       {% endfor %}
     </tr>
   </tfoot>
 </table>
+
