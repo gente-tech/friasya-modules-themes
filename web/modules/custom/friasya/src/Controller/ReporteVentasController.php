@@ -60,6 +60,12 @@ class ReporteVentasController extends ControllerBase {
       $metodo_id = $metodo_term?->id();
       $metodo_label = $metodo_term?->label();
 
+      \Drupal::logger('reporte_ventas_debug')->notice('Transacción: valor=@valor | metodo_id=@mid | metodo_label=@mlabel', [
+        '@valor' => $valor,
+        '@mid' => $metodo_id ?? 'null',
+        '@mlabel' => $metodo_label ?? 'null',
+      ]);
+
       // Agrupar productos
       if ($producto) {
         $nombre = $producto->label();
@@ -75,6 +81,11 @@ class ReporteVentasController extends ControllerBase {
 
         $productos[$nombre]['cantidad'] += (int) $cantidad;
         $productos[$nombre]['facturacion'] += $valor;
+      }
+
+      // Incluir método que no esté en taxonomía
+      if ($metodo_id && !isset($metodo_labels[$metodo_id])) {
+        $metodo_labels[$metodo_id] = $metodo_label ?? 'Desconocido';
       }
 
       // Totales por método
@@ -98,6 +109,10 @@ class ReporteVentasController extends ControllerBase {
 
       $tabla_horizontal[] = $row;
     }
+
+    \Drupal::logger('reporte_ventas_debug')->notice('Totales por método: <pre>@data</pre>', [
+      '@data' => print_r($totales_por_metodo, TRUE),
+    ]);
 
     return [
       '#theme' => 'reporte_ventas',
