@@ -99,6 +99,8 @@ function friasya_theme($existing, $type, $theme, $path) {
         'metodo_labels' => [],
         'tabla_horizontal' => [],
         'totales_por_metodo' => [],
+'domicilios_por_metodo' => [],
+        'total_domicilios' => 0,
       ],
       'template' => 'reporte-ventas',
     ],
