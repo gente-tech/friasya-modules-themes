@@ -4,6 +4,7 @@ namespace Drupal\friasya\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
 use Symfony\Component\HttpFoundation\Request;
 
 class ReporteVentasController extends ControllerBase {
@@ -23,11 +24,6 @@ class ReporteVentasController extends ControllerBase {
       $end = strtotime('next monday', $fecha);
     }
 
-    \Drupal::logger('reporte_ventas')->notice('Fechas: @start - @end', [
-      '@start' => date('Y-m-d H:i:s', $start),
-      '@end' => date('Y-m-d H:i:s', $end),
-    ]);
-
     $nids = \Drupal::entityQuery('node')
       ->accessCheck(TRUE)
       ->condition('type', 'transacion')
@@ -39,11 +35,27 @@ class ReporteVentasController extends ControllerBase {
     $productos = [];
     $metodos_pago = [];
 
+    // Carga los términos del vocabulario "metodos_de_pago"
+    $metodos = Term::loadMultiple(
+      \Drupal::entityQuery('taxonomy_term')
+        ->condition('vid', 'metodos_de_pago')
+        ->execute()
+    );
+
+    $metodo_labels = [];
+    foreach ($metodos as $term) {
+      $metodo_labels[$term->id()] = $term->label();
+    }
+
+    $tabla_horizontal = [];
+    $totales_por_metodo = [];
+
     foreach ($transacciones as $trans) {
       $producto = $trans->get('field_productos')->entity;
       $cantidad = $trans->get('field_cantidad')->value;
-      $valor = $trans->get('field_valor')->value;
-      $metodo = $trans->get('field_metodo_de_pago')->entity?->label();
+      $valor = (int) $trans->get('field_valor')->value;
+      $metodo_term = $trans->get('field_metodo_de_pago')->entity;
+      $metodo_label = $metodo_term?->label();
 
       if ($producto) {
         $nombre = $producto->label();
@@ -58,24 +70,38 @@ class ReporteVentasController extends ControllerBase {
         }
 
         $productos[$nombre]['cantidad'] += (int) $cantidad;
-        $productos[$nombre]['facturacion'] += (int) $valor;
+        $productos[$nombre]['facturacion'] += $valor;
       }
 
-      if ($metodo) {
-        if (!isset($metodos_pago[$metodo])) {
-          $metodos_pago[$metodo] = 0;
+      if ($metodo_label) {
+        if (!isset($metodos_pago[$metodo_label])) {
+          $metodos_pago[$metodo_label] = 0;
         }
-        $metodos_pago[$metodo] += (int) $valor;
+        $metodos_pago[$metodo_label] += $valor;
       }
+
+      // Construcción de fila horizontal
+      $row = [];
+      foreach ($metodo_labels as $id => $label) {
+        $row[$label] = 0;
+      }
+      if ($metodo_label) {
+        $row[$metodo_label] = $valor;
+        $totales_por_metodo[$metodo_label] = ($totales_por_metodo[$metodo_label] ?? 0) + $valor;
+      }
+      $tabla_horizontal[] = $row;
     }
 
     return [
       '#theme' => 'reporte_ventas',
       '#productos' => $productos,
       '#fecha' => date('Y-m-d', $start),
-      '#metodos_pago' => $metodos_pago,
+      '#metodo_labels' => $metodo_labels,
+      '#tabla_horizontal' => $tabla_horizontal,
+      '#totales_por_metodo' => $totales_por_metodo,
       '#attached' => ['library' => ['friasya/weekly_report']],
       '#cache' => ['max-age' => 0],
     ];
   }
 }
+
