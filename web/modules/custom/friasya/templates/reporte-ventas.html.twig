@@ -52,24 +52,6 @@
       {% endfor %}
     </tr>
   </thead>
-  <tbody>
-    {% for row in tabla_horizontal %}
-      <tr>
-        {% for id, label in metodo_labels %}
-          {% set entry = row[id]|default({}) %}
-          {% set valor = entry.valor|default(0) %}
-          {% set doms = entry.domicilios|default(0) %}
-          <td style="padding: 8px; border: 1px solid #ccc; text-align: right;">
-            {% if valor > 0 %}
-              ${{ valor|number_format }}<br><small>Domicilios: {{ doms }}</small>
-            {% else %}
-              -
-            {% endif %}
-          </td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
-  </tbody>
   <tfoot>
     <tr style="background-color:#f1f1f1; font-weight: bold;">
       {% for id, label in metodo_labels %}
