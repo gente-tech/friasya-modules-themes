@@ -34,8 +34,12 @@ class ReporteVentasController extends ControllerBase {
     $transacciones = Node::loadMultiple($nids);
     $productos = [];
     $metodos_pago = [];
+    $tabla_horizontal = [];
+    $totales_por_metodo = [];
+    $domicilios_por_metodo = [];
+    $total_domicilios = 0;
 
-    // Cargar términos del vocabulario de métodos de pago
+    // Cargar términos de la taxonomía "metodos_de_pago"
     $term_ids = \Drupal::entityQuery('taxonomy_term')
       ->accessCheck(TRUE)
       ->condition('vid', 'metodos_de_pago')
@@ -48,11 +52,8 @@ class ReporteVentasController extends ControllerBase {
       $metodo_labels[$term->id()] = $term->label();
     }
 
-    $tabla_horizontal = [];
-    $totales_por_metodo = [];
-
     foreach ($transacciones as $trans) {
-      // FILTRO por tipo "ingreso"
+      // Filtrar solo tipo ingreso
       $tipo_term = $trans->get('field_tipo')->entity;
       $tipo_label = $tipo_term?->label();
       if (strtolower($tipo_label) !== 'ingreso') {
@@ -62,12 +63,13 @@ class ReporteVentasController extends ControllerBase {
       $producto = $trans->get('field_productos')->entity;
       $cantidad = $trans->get('field_cantidad')->value;
       $valor = (int) $trans->get('field_valor')->value;
-      $metodo_term = $trans->get('field_metodo_de_pago')->entity;
+      $domicilio = (int) $trans->get('field_domicilio')->value;
+      $total_domicilios += $domicilio;
 
+      $metodo_term = $trans->get('field_metodo_de_pago')->entity;
       $metodo_id = $metodo_term?->id();
       $metodo_label = $metodo_term?->label();
 
-      // Agrupar productos
       if ($producto) {
         $nombre = $producto->label();
         $precio = $producto->get('field_precio')->value;
@@ -84,28 +86,26 @@ class ReporteVentasController extends ControllerBase {
         $productos[$nombre]['facturacion'] += $valor;
       }
 
-      // Incluir método que no esté registrado
       if ($metodo_id && !isset($metodo_labels[$metodo_id])) {
         $metodo_labels[$metodo_id] = $metodo_label ?? 'Desconocido';
       }
 
-      // Totales por método
       if ($metodo_id) {
-        if (!isset($metodos_pago[$metodo_id])) {
-          $metodos_pago[$metodo_id] = 0;
-        }
-        $metodos_pago[$metodo_id] += $valor;
+        $metodos_pago[$metodo_id] = ($metodos_pago[$metodo_id] ?? 0) + $valor;
+        $totales_por_metodo[$metodo_id] = ($totales_por_metodo[$metodo_id] ?? 0) + $valor;
+        $domicilios_por_metodo[$metodo_id] = ($domicilios_por_metodo[$metodo_id] ?? 0) + $domicilio;
       }
 
-      // Tabla horizontal
       $row = [];
       foreach ($metodo_labels as $id => $label) {
-        $row[$id] = 0;
+        $row[$id] = ['valor' => 0, 'domicilios' => 0];
       }
 
       if ($metodo_id) {
-        $row[$metodo_id] = $valor;
-        $totales_por_metodo[$metodo_id] = ($totales_por_metodo[$metodo_id] ?? 0) + $valor;
+        $row[$metodo_id] = [
+          'valor' => $valor,
+          'domicilios' => $domicilio,
+        ];
       }
 
       $tabla_horizontal[] = $row;
@@ -118,6 +118,8 @@ class ReporteVentasController extends ControllerBase {
       '#metodo_labels' => $metodo_labels,
       '#tabla_horizontal' => $tabla_horizontal,
       '#totales_por_metodo' => $totales_por_metodo,
+      '#domicilios_por_metodo' => $domicilios_por_metodo,
+      '#total_domicilios' => $total_domicilios,
       '#attached' => ['library' => ['friasya/weekly_report']],
       '#cache' => ['max-age' => 0],
     ];
