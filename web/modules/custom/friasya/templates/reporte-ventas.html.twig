@@ -53,7 +53,7 @@
   <tbody>
     {% for row in tabla_horizontal %}
       <tr>
-        {% for label in metodo_labels|values %}
+        {% for id, label in metodo_labels %}
           <td>
             {% set valor = row[label]|default(0) %}
             {{ valor > 0 ? ('$' ~ valor|number_format) : '' }}
@@ -64,10 +64,11 @@
   </tbody>
   <tfoot>
     <tr>
-      {% for label in metodo_labels|values %}
+      {% for id, label in metodo_labels %}
         <th>${{ totales_por_metodo[label]|default(0)|number_format }}</th>
       {% endfor %}
     </tr>
   </tfoot>
 </table>
+
 
