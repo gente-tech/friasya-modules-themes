@@ -53,18 +53,6 @@
       {% endfor %}
     </tr>
   </thead>
-  <tbody>
-    {% for row in tabla_horizontal %}
-      <tr>
-        {% for id, label in metodo_labels %}
-          <td>
-            {% set valor = row[id]|default(0) %}
-            {{ valor > 0 ? ('$' ~ valor|number_format) : '' }}
-          </td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
-  </tbody>
   <tfoot>
     <tr>
       {% for id, label in metodo_labels %}
