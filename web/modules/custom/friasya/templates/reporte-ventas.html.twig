@@ -55,7 +55,7 @@
       <tr>
         {% for id, label in metodo_labels %}
           <td>
-            {% set valor = row[label]|default(0) %}
+            {% set valor = row[id]|default(0) %}
             {{ valor > 0 ? ('$' ~ valor|number_format) : '' }}
           </td>
         {% endfor %}
@@ -65,10 +65,8 @@
   <tfoot>
     <tr>
       {% for id, label in metodo_labels %}
-        <th>${{ totales_por_metodo[label]|default(0)|number_format }}</th>
+        <th>${{ totales_por_metodo[id]|default(0)|number_format }}</th>
       {% endfor %}
     </tr>
   </tfoot>
 </table>
-
-
