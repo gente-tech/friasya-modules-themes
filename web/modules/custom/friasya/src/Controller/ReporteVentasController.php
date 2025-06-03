@@ -35,15 +35,15 @@ class ReporteVentasController extends ControllerBase {
     $productos = [];
     $metodos_pago = [];
 
-    // Carga los términos del vocabulario "metodos_de_pago"
-    $metodos = Term::loadMultiple(
-      \Drupal::entityQuery('taxonomy_term')
+    // Cargar términos con accessCheck
+    $term_ids = \Drupal::entityQuery('taxonomy_term')
       ->accessCheck(TRUE)
-        ->condition('vid', 'metodos_de_pago')
-        ->execute()
-    );
+      ->condition('vid', 'metodos_de_pago')
+      ->execute();
 
+    $metodos = Term::loadMultiple($term_ids);
     $metodo_labels = [];
+
     foreach ($metodos as $term) {
       $metodo_labels[$term->id()] = $term->label();
     }
@@ -56,8 +56,11 @@ class ReporteVentasController extends ControllerBase {
       $cantidad = $trans->get('field_cantidad')->value;
       $valor = (int) $trans->get('field_valor')->value;
       $metodo_term = $trans->get('field_metodo_de_pago')->entity;
+
+      $metodo_id = $metodo_term?->id();
       $metodo_label = $metodo_term?->label();
 
+      // Agrupar productos
       if ($producto) {
         $nombre = $producto->label();
         $precio = $producto->get('field_precio')->value;
@@ -74,22 +77,25 @@ class ReporteVentasController extends ControllerBase {
         $productos[$nombre]['facturacion'] += $valor;
       }
 
-      if ($metodo_label) {
-        if (!isset($metodos_pago[$metodo_label])) {
-          $metodos_pago[$metodo_label] = 0;
+      // Totales por método
+      if ($metodo_id) {
+        if (!isset($metodos_pago[$metodo_id])) {
+          $metodos_pago[$metodo_id] = 0;
         }
-        $metodos_pago[$metodo_label] += $valor;
+        $metodos_pago[$metodo_id] += $valor;
       }
 
-      // Construcción de fila horizontal
+      // Tabla horizontal por transacción
       $row = [];
       foreach ($metodo_labels as $id => $label) {
-        $row[$label] = 0;
+        $row[$id] = 0;
       }
-      if ($metodo_label) {
-        $row[$metodo_label] = $valor;
-        $totales_por_metodo[$metodo_label] = ($totales_por_metodo[$metodo_label] ?? 0) + $valor;
+
+      if ($metodo_id) {
+        $row[$metodo_id] = $valor;
+        $totales_por_metodo[$metodo_id] = ($totales_por_metodo[$metodo_id] ?? 0) + $valor;
       }
+
       $tabla_horizontal[] = $row;
     }
 
@@ -105,4 +111,3 @@ class ReporteVentasController extends ControllerBase {
     ];
   }
 }
-
