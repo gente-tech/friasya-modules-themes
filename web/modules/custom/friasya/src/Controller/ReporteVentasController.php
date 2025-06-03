@@ -35,7 +35,7 @@ class ReporteVentasController extends ControllerBase {
     $productos = [];
     $metodos_pago = [];
 
-    // Cargar términos con accessCheck
+    // Cargar términos del vocabulario de métodos de pago
     $term_ids = \Drupal::entityQuery('taxonomy_term')
       ->accessCheck(TRUE)
       ->condition('vid', 'metodos_de_pago')
@@ -52,6 +52,13 @@ class ReporteVentasController extends ControllerBase {
     $totales_por_metodo = [];
 
     foreach ($transacciones as $trans) {
+      // FILTRO por tipo "ingreso"
+      $tipo_term = $trans->get('field_tipo')->entity;
+      $tipo_label = $tipo_term?->label();
+      if (strtolower($tipo_label) !== 'ingreso') {
+        continue;
+      }
+
       $producto = $trans->get('field_productos')->entity;
       $cantidad = $trans->get('field_cantidad')->value;
       $valor = (int) $trans->get('field_valor')->value;
@@ -59,12 +66,6 @@ class ReporteVentasController extends ControllerBase {
 
       $metodo_id = $metodo_term?->id();
       $metodo_label = $metodo_term?->label();
-
-      \Drupal::logger('reporte_ventas_debug')->notice('Transacción: valor=@valor | metodo_id=@mid | metodo_label=@mlabel', [
-        '@valor' => $valor,
-        '@mid' => $metodo_id ?? 'null',
-        '@mlabel' => $metodo_label ?? 'null',
-      ]);
 
       // Agrupar productos
       if ($producto) {
@@ -83,7 +84,7 @@ class ReporteVentasController extends ControllerBase {
         $productos[$nombre]['facturacion'] += $valor;
       }
 
-      // Incluir método que no esté en taxonomía
+      // Incluir método que no esté registrado
       if ($metodo_id && !isset($metodo_labels[$metodo_id])) {
         $metodo_labels[$metodo_id] = $metodo_label ?? 'Desconocido';
       }
@@ -96,7 +97,7 @@ class ReporteVentasController extends ControllerBase {
         $metodos_pago[$metodo_id] += $valor;
       }
 
-      // Tabla horizontal por transacción
+      // Tabla horizontal
       $row = [];
       foreach ($metodo_labels as $id => $label) {
         $row[$id] = 0;
@@ -109,10 +110,6 @@ class ReporteVentasController extends ControllerBase {
 
       $tabla_horizontal[] = $row;
     }
-
-    \Drupal::logger('reporte_ventas_debug')->notice('Totales por método: <pre>@data</pre>', [
-      '@data' => print_r($totales_por_metodo, TRUE),
-    ]);
 
     return [
       '#theme' => 'reporte_ventas',
