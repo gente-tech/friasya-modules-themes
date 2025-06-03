@@ -40,3 +40,30 @@
     </tr>
   </tfoot>
 </table>
+
+<h3>Resumen por método de pago</h3>
+<table class="ventas-metodos">
+  <thead>
+    <tr>
+      <th>Método de pago</th>
+      <th>Total facturado</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set total_general = 0 %}
+    {% for metodo, total in metodos_pago %}
+      {% set total_general = total_general + total %}
+      <tr>
+        <td>{{ metodo }}</td>
+        <td>${{ total|number_format }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>Total general</th>
+      <th>${{ total_general|number_format }}</th>
+    </tr>
+  </tfoot>
+</table>
+
