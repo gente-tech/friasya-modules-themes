@@ -12,16 +12,27 @@ class ReporteVentasController extends ControllerBase {
   public function view(Request $request) {
     $fecha_param = $request->query->get('fecha');
     $fecha = $fecha_param ? strtotime($fecha_param) : strtotime('now');
+    $modo = 'semana'; // por defecto
 
     if ($fecha_param && preg_match('/^\d{4}$/', $fecha_param)) {
       $start = strtotime($fecha_param . '-01-01');
       $end = strtotime('+1 year', $start);
+      $modo = 'anio';
     } elseif ($fecha_param && preg_match('/^\d{4}-\d{2}$/', $fecha_param)) {
       $start = strtotime($fecha_param . '-01');
       $end = strtotime('+1 month', $start);
+      $modo = 'mes';
+    } elseif ($fecha_param && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_param)) {
+      // Modo semana por día exacto, pero limitar al mismo mes
+      $start = strtotime('monday this week', $fecha);
+      $end = strtotime('next monday', $fecha);
+      $modo = 'semana_mes';
+      $anio_param = date('Y', $fecha);
+      $mes_param = date('m', $fecha);
     } else {
       $start = strtotime('monday this week', $fecha);
       $end = strtotime('next monday', $fecha);
+      $modo = 'semana';
     }
 
     $nids = \Drupal::entityQuery('node')
@@ -53,7 +64,14 @@ class ReporteVentasController extends ControllerBase {
     }
 
     foreach ($transacciones as $trans) {
-      // Filtrar solo tipo ingreso
+      // FILTRO adicional para modo semana_mes: excluir nodos fuera del mes
+      if ($modo === 'semana_mes') {
+        $created = $trans->getCreatedTime();
+        if (date('Y', $created) !== $anio_param || date('m', $created) !== $mes_param) {
+          continue;
+        }
+      }
+
       $tipo_term = $trans->get('field_tipo')->entity;
       $tipo_label = $tipo_term?->label();
       if (strtolower($tipo_label) !== 'ingreso') {
@@ -91,7 +109,6 @@ class ReporteVentasController extends ControllerBase {
       }
 
       if ($metodo_id) {
-        $metodos_pago[$metodo_id] = ($metodos_pago[$metodo_id] ?? 0) + $valor;
         $totales_por_metodo[$metodo_id] = ($totales_por_metodo[$metodo_id] ?? 0) + $valor;
         $domicilios_por_metodo[$metodo_id] = ($domicilios_por_metodo[$metodo_id] ?? 0) + $domicilio;
       }
