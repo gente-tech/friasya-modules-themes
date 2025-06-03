@@ -38,6 +38,7 @@ class ReporteVentasController extends ControllerBase {
     // Carga los términos del vocabulario "metodos_de_pago"
     $metodos = Term::loadMultiple(
       \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(TRUE)
         ->condition('vid', 'metodos_de_pago')
         ->execute()
     );
