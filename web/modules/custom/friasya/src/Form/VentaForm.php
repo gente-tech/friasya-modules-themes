@@ -46,6 +46,14 @@ class VentaForm extends FormBase {
       '#required' => TRUE,
     ];
 
+    $form['domicilio'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Valor del domicilio'),
+      '#default_value' => 0,
+      '#min' => 0,
+      '#required' => TRUE,
+    ];
+
     $form['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Crear transacción'),
@@ -60,6 +68,7 @@ class VentaForm extends FormBase {
     $cantidad = (int) $form_state->getValue('cantidad');
     $metodo_tid = $form_state->getValue('metodo_pago');
     $direccion = $form_state->getValue('direccion');
+    $domicilio = (int) $form_state->getValue('domicilio');
 
     // Obtener valor unitario desde field_precio.
     $producto = Node::load($producto_nid);
@@ -77,8 +86,9 @@ class VentaForm extends FormBase {
       'field_productos' => ['target_id' => $producto_nid],
       'field_cantidad' => $cantidad,
       'field_valor' => $valor_total,
+      'field_domicilio' => $domicilio,
       'field_metodo_de_pago' => [['target_id' => $metodo_tid]],
-      'field_tipo' => [['target_id' => $this->getTermIdByName('Ingreso', 't')]], // ← Aquí se corrigió
+      'field_tipo' => [['target_id' => $this->getTermIdByName('Ingreso', 't')]],
       'body' => [
         'value' => $direccion,
         'format' => 'basic_html',
